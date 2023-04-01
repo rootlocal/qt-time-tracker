@@ -4,31 +4,33 @@
 #include "global.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "statusindicator.h"
 #include "view/clockview.h"
-#include "advancedsettings.h"
+#include "SettingsWindow.h"
 
 QT_USE_NAMESPACE
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
+                                          ui(new Ui::MainWindow) {
     systemTrayIcon = new QSystemTrayIcon(Default::App::icon(), this);
     menu = new ActionMenu(this);
     clock = new ClockView(this, menu);
-    settings = new AdvancedSettings(nullptr);
+    settingsWindow = new SettingsWindow(nullptr);
     ui->setupUi(this);
 
-
-    connect(settings, SIGNAL(signalSizeChanged(int, int)), clock, SLOT(setSize(int, int)));
-    connect(settings, SIGNAL(signalColorChange(ClockState, QColor)), clock, SLOT(setColor(ClockState, QColor)));
     initActions();
     initDefaultMenu();
     setState(WORK);
-    connect(settings, SIGNAL(signalColorChange(ClockState, QColor)), clock, SLOT(setColor(ClockState, QColor)));
-    connect(settings, SIGNAL(signalSizeChanged(int, int)), clock, SLOT(setSize(int, int)));
+
+    connect(settingsWindow, SIGNAL(signalSizeChanged(int, int)), clock, SLOT(setSize(int, int)));
+    connect(settingsWindow, SIGNAL(signalColorChange(ClockState, QColor)), clock, SLOT(setColor(ClockState, QColor)));
+    connect(settingsWindow, SIGNAL(signalColorChange(ClockState, QColor)), clock, SLOT(setColor(ClockState, QColor)));
+    connect(settingsWindow, SIGNAL(signalSizeChanged(int, int)), clock, SLOT(setSize(int, int)));
+    settingsWindow->loadSettings();
+
     connect(clock, SIGNAL(startClicked()), SLOT(actionStart()));
     connect(clock, SIGNAL(pauseClicked()), SLOT(actionPause()));
-    settings->loadSettings();
     clock->show();
+
     this->setWindowIcon(Default::App::icon());
     this->setWindowTitle(tr("Computools Timer Cheker"));
     startTimer(1000);
@@ -38,7 +40,7 @@ MainWindow::~MainWindow() {
     delete ui;
     delete systemTrayIcon;
     delete menu;
-    delete settings;
+    delete settingsWindow;
 }
 
 void MainWindow::initDefaultMenu() {
@@ -50,7 +52,7 @@ void MainWindow::initDefaultMenu() {
 void MainWindow::initActions() {
     connect(ui->actionAdvanced_Settings, SIGNAL(triggered()), menu->getAction(ActionMenu::Action::SETTINGS),
             SLOT(trigger()));
-    connect(menu->getAction(ActionMenu::Action::SETTINGS), SIGNAL(triggered()), settings, SLOT(show()));
+    connect(menu->getAction(ActionMenu::Action::SETTINGS), SIGNAL(triggered()), settingsWindow, SLOT(show()));
     connect(menu->getAction(ActionMenu::Action::START), SIGNAL(triggered()), SLOT(actionStart()));
     connect(menu->getAction(ActionMenu::Action::PAUSE), SIGNAL(triggered()), SLOT(actionPause()));
     connect(menu->getAction(ActionMenu::Action::STOP), SIGNAL(triggered()), SLOT(actionStop()));

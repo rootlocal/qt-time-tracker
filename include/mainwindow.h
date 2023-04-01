@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "view/clockview.h"
 #include "ActionMenu.h"
+#include "SettingsWindow.h"
 
 class QSystemTrayIcon;
 
@@ -46,7 +47,7 @@ private:
     QSystemTrayIcon *systemTrayIcon;
     quint64 seconds = 0;
     ClockView *clock;
-    AdvancedSettings *settings;
+    SettingsWindow *settingsWindow;
     ClockState state = WORK;
     ActionMenu *menu;
 };

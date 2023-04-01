@@ -1,21 +1,22 @@
-#include "advancedsettings.h"
-#include "ui_advancedsettings.h"
+#include "SettingsWindow.h"
+#include "ui_settingswindow.h"
 #include <QColorDialog>
 #include <QDebug>
 #include <QSettings>
 
-AdvancedSettings::AdvancedSettings(QWidget *parent) : QWidget(parent), ui(new Ui::AdvancedSettings) {
+SettingsWindow::SettingsWindow(QWidget *parent) : QDialog(parent),
+                                                  ui(new Ui::SettingsWindow) {
 
     settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "Computools", "Timer", this);
-    
+
     ui->setupUi(this);
 }
 
-AdvancedSettings::~AdvancedSettings() {
+SettingsWindow::~SettingsWindow() {
     delete ui;
 }
 
-void AdvancedSettings::loadSettings() {
+void SettingsWindow::loadSettings() {
     const auto work = settings->value("colors/work", QColor(150, 255, 150)).value<QColor>();
     const auto pause = settings->value("colors/pause", QColor(255, 255, 120)).value<QColor>();
     const auto stop = settings->value("colors/stop", QColor(255, 100, 100)).value<QColor>();
@@ -48,11 +49,11 @@ void AdvancedSettings::loadSettings() {
     }
 }
 
-void AdvancedSettings::saveSettings() {
+void SettingsWindow::saveSettings() {
 
 }
 
-void AdvancedSettings::on_comboBox_currentIndexChanged(int index) {
+void SettingsWindow::on_comboBox_currentIndexChanged(int index) {
     int width = 128;
     int height = 28;
     switch (index) {
@@ -76,11 +77,11 @@ void AdvancedSettings::on_comboBox_currentIndexChanged(int index) {
     signalSizeChanged(width, height);
 }
 
-void AdvancedSettings::slotSizeChanged() {
+void SettingsWindow::slotSizeChanged() {
     signalSizeChanged(ui->boxWidth->value(), ui->boxHeight->value());
 }
 
-void AdvancedSettings::on_btnClockWorkColor_clicked() {
+void SettingsWindow::on_btnClockWorkColor_clicked() {
     const QColor color = QColorDialog::getColor(QColor(150, 255, 150));
     signalColorChange(WORK, color);
     settings->setValue("colors/work", color);
@@ -92,7 +93,7 @@ void AdvancedSettings::on_btnClockWorkColor_clicked() {
     ui->btnClockWorkColor->update();
 }
 
-void AdvancedSettings::on_btnClockPauseColor_clicked() {
+void SettingsWindow::on_btnClockPauseColor_clicked() {
     const QColor color = QColorDialog::getColor(QColor(255, 255, 120));
     signalColorChange(PAUSE, color);
     settings->setValue("colors/pause", color);
@@ -104,7 +105,7 @@ void AdvancedSettings::on_btnClockPauseColor_clicked() {
     ui->btnClockPauseColor->update();
 }
 
-void AdvancedSettings::on_btnClockBreakColor_clicked() {
+void SettingsWindow::on_btnClockBreakColor_clicked() {
     const QColor color = QColorDialog::getColor(QColor(255, 100, 100));
     signalColorChange(STOP, color);
     settings->setValue("colors/stop", color);

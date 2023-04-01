@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     systemTrayIcon = new QSystemTrayIcon(Default::App::icon(), this);
     menu = new ActionMenu(this);
     clock = new ClockView(this, menu);
-    settings = new AdvancedSettings(this);
+    settings = new AdvancedSettings(nullptr);
     ui->setupUi(this);
 
 
@@ -37,6 +37,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 MainWindow::~MainWindow() {
     delete ui;
     delete systemTrayIcon;
+    delete menu;
+    delete settings;
 }
 
 void MainWindow::initDefaultMenu() {
@@ -46,7 +48,8 @@ void MainWindow::initDefaultMenu() {
 }
 
 void MainWindow::initActions() {
-    connect(ui->actionAdvanced_Settings, SIGNAL(triggered()), menu->getAction(ActionMenu::Action::SETTINGS), SLOT(trigger()));
+    connect(ui->actionAdvanced_Settings, SIGNAL(triggered()), menu->getAction(ActionMenu::Action::SETTINGS),
+            SLOT(trigger()));
     connect(menu->getAction(ActionMenu::Action::SETTINGS), SIGNAL(triggered()), settings, SLOT(show()));
     connect(menu->getAction(ActionMenu::Action::START), SIGNAL(triggered()), SLOT(actionStart()));
     connect(menu->getAction(ActionMenu::Action::PAUSE), SIGNAL(triggered()), SLOT(actionPause()));

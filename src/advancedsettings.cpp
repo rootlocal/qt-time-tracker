@@ -4,10 +4,10 @@
 #include <QDebug>
 #include <QSettings>
 
-AdvancedSettings::AdvancedSettings(QWidget *parent) : QWidget(parent),
-                                                      ui(new Ui::AdvancedSettings),
-                                                      settings(new QSettings(QSettings::IniFormat, QSettings::UserScope,
-                                                                             "Computools", "Timer", this)) {
+AdvancedSettings::AdvancedSettings(QWidget *parent) : QWidget(parent), ui(new Ui::AdvancedSettings) {
+
+    settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "Computools", "Timer", this);
+    
     ui->setupUi(this);
 }
 

@@ -32,8 +32,9 @@ void ClockView::setSize(int width, int height) {
     this->resize(QSize(width, height));
 }
 
-void ClockView::setState(ClockState s) {
-    state = s;
+void ClockView::setState(ClockState clockState) {
+    state = clockState;
+
     switch (state) {
         case WORK:
             ui->lcdDisplay->setStyleSheet(tr("background-color: rgb(%1, %2, %3);")
@@ -57,8 +58,8 @@ void ClockView::setState(ClockState s) {
     };
 }
 
-void ClockView::setColor(ClockState s, const QColor &color) {
-    switch (s) {
+void ClockView::setColor(ClockState clockState, const QColor &color) {
+    switch (clockState) {
         case WORK:
             colorWork = color;
             break;
@@ -70,13 +71,14 @@ void ClockView::setColor(ClockState s, const QColor &color) {
             break;
         default:
             return;
-            break;
     };
-    if (s == state)
+
+    if (clockState == state) {
         ui->lcdDisplay->setStyleSheet(tr("background-color: rgb(%1, %2, %3);")
                                               .arg(color.red())
                                               .arg(color.green())
                                               .arg(color.blue()));
+    }
 }
 
 void ClockView::showContextMenu(const QPoint &point) {
@@ -93,9 +95,11 @@ void ClockView::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void ClockView::mousePressEvent(QMouseEvent *event) {
+
     if (event->buttons() & Qt::LeftButton) {
         oldMousePosition = event->globalPos();
     }
+
     isMouseDrag = true;
     event->accept();
 }
@@ -105,18 +109,23 @@ void ClockView::mouseReleaseEvent(QMouseEvent *event) {
     event->accept();
 }
 
-void ClockView::mouseDoubleClickEvent(QMouseEvent *) {
-    if (state == WORK)
-            emit pauseClicked();
-    else if (state == PAUSE)
-            emit startClicked();
+void ClockView::mouseDoubleClickEvent(QMouseEvent *event) {
+
+    if (state == WORK) {
+        emit pauseClicked();
+    } else if (state == PAUSE) {
+        emit startClicked();
+    }
 }
 
-void ClockView::keyPressEvent(QKeyEvent *e) {
-    if (e->key() == Qt::Key_Space) {
-        if (state == WORK)
-                emit pauseClicked();
-        else if (state == PAUSE)
-                emit startClicked();
+void ClockView::keyPressEvent(QKeyEvent *event) {
+    if (event->key() == Qt::Key_Space) {
+
+        if (state == WORK) {
+            emit pauseClicked();
+        } else if (state == PAUSE) {
+            emit startClicked();
+        }
+
     }
 }

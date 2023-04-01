@@ -38,14 +38,12 @@ void MainWindow::initActions() {
 
 }
 
-MainWindow::MainWindow(QWidget *parent) :
-        QMainWindow(parent),
-        ui(new Ui::MainWindow),
-        systemTrayIcon(new QSystemTrayIcon(Default::App::icon(), this)),
-        seconds(0),
-        clock(new ClockView(nullptr)),
-        settings(new AdvancedSettings(nullptr)),
-        state(WORK) {
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
+    state = WORK;
+    systemTrayIcon = new QSystemTrayIcon(Default::App::icon(), this);
+    clock = new ClockView(this);
+    settings = new AdvancedSettings(this);
+
     ui->setupUi(this);
     initActions();
     initDefaultMenu();

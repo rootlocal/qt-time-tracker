@@ -43,7 +43,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QSystemTrayIcon *systemTrayIcon;
-    quint64 seconds;
+    quint64 seconds = 0;
     ClockView *clock;
     AdvancedSettings *settings;
     ClockState state;

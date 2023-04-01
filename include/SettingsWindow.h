@@ -1,22 +1,22 @@
 #ifndef ADVANCED_SETTINGS_H
 #define ADVANCED_SETTINGS_H
 
-#include <QWidget>
+#include <QDialog>
 #include "view/clockview.h"
 
 class QSettings;
 
 namespace Ui {
-    class AdvancedSettings;
+    class SettingsWindow;
 }
 
-class AdvancedSettings : public QWidget {
+class SettingsWindow : public QDialog {
 Q_OBJECT
 
 public:
-    explicit AdvancedSettings(QWidget *parent = nullptr);
+    explicit SettingsWindow(QWidget *parent = nullptr);
 
-    ~AdvancedSettings() override;
+    ~SettingsWindow() override;
 
     void loadSettings();
 
@@ -41,7 +41,7 @@ private slots:
     void on_btnClockBreakColor_clicked();
 
 private:
-    Ui::AdvancedSettings *ui;
+    Ui::SettingsWindow *ui;
     QSettings *settings;
 };
 

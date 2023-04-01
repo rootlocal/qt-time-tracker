@@ -7,4 +7,8 @@
         <file alias="icon_arrow_down">icons/arrow_down.png</file>
         <file alias="icon_arrow_up">icons/arrow_up.png</file>
     </qresource>
+
+    <qresource prefix="/lang">
+        <file alias="application_ru_RU">translations/application_ru.qm</file>
+    </qresource>
 </RCC>

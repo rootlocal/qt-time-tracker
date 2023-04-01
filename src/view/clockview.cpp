@@ -3,14 +3,14 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <QMenu>
-#include "actionfactory.h"
 
-ClockView::ClockView(QWidget *parent) :
-        QWidget(parent),
-        ui(new Ui::ClockView),
-        colorWork(150, 255, 150),
-        colorPause(255, 251, 120),
-        colorBreak(255, 100, 100) {
+ClockView::ClockView(QWidget *parent, ActionMenu *actionMenu) : QWidget(parent),
+                                                                ui(new Ui::ClockView),
+                                                                colorWork(150, 255, 150),
+                                                                colorPause(255, 251, 120),
+                                                                colorBreak(255, 100, 100) {
+
+    menu = actionMenu->getMenu();
     ui->setupUi(this);
     ui->lcdDisplay->display("000:00:00");
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
@@ -80,7 +80,6 @@ void ClockView::setColor(ClockState s, const QColor &color) {
 }
 
 void ClockView::showContextMenu(const QPoint &point) {
-    QMenu *menu = ActionFactory::defaultMenu();
     menu->popup(mapToGlobal(point));
 }
 

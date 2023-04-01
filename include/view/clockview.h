@@ -2,6 +2,7 @@
 #define CLOCK_VIEW_H
 
 #include <QWidget>
+#include "ActionMenu.h"
 
 namespace Ui {
     class ClockView;
@@ -18,7 +19,7 @@ Q_OBJECT
 
 public:
 
-    explicit ClockView(QWidget *parent = nullptr);
+    explicit ClockView(QWidget *parent = nullptr, ActionMenu *actionMenu = nullptr);
 
     ~ClockView() override;
 
@@ -54,11 +55,12 @@ protected:
 private:
     Ui::ClockView *ui;
     QPoint oldMousePosition;
-    bool isMouseDrag;
-    ClockState state;
+    bool isMouseDrag = false;
+    ClockState state = WORK;
     QColor colorWork;
     QColor colorPause;
     QColor colorBreak;
+    QMenu *menu;
 };
 
 #endif // CLOCK_VIEW_H

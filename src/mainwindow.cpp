@@ -7,49 +7,22 @@
 #include "statusindicator.h"
 #include "view/clockview.h"
 #include "advancedsettings.h"
-#include "actionfactory.h"
 
 QT_USE_NAMESPACE
 
-void MainWindow::initDefaultMenu() {
-    connect(ActionFactory::actionShow(), SIGNAL(triggered()), this, SLOT(show()));
-    connect(ActionFactory::actionExit(), SIGNAL(triggered()), qApp, SLOT(quit()));
-    auto *menu = ActionFactory::defaultMenu();
-    menu->addAction(ActionFactory::actionPause());
-    menu->addAction(ActionFactory::actionStart());
-    menu->addAction(ActionFactory::actionStop());
-    menu->addSeparator();
-    menu->addAction(ActionFactory::actionSettings());
-    menu->addSeparator();
-    menu->addAction(ActionFactory::actionExit());
-    systemTrayIcon->setContextMenu(menu);
-    systemTrayIcon->show();
-}
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
+    systemTrayIcon = new QSystemTrayIcon(Default::App::icon(), this);
+    menu = new ActionMenu(this);
+    clock = new ClockView(this, menu);
+    settings = new AdvancedSettings(this);
+    ui->setupUi(this);
 
-void MainWindow::initActions() {
-    ActionFactory::initialize(this);
+
     connect(settings, SIGNAL(signalSizeChanged(int, int)), clock, SLOT(setSize(int, int)));
     connect(settings, SIGNAL(signalColorChange(ClockState, QColor)), clock, SLOT(setColor(ClockState, QColor)));
-    connect(ui->actionAdvanced_Settings, SIGNAL(triggered()), ActionFactory::actionSettings(), SLOT(trigger()));
-    connect(ActionFactory::actionSettings(), SIGNAL(triggered()), settings, SLOT(show()));
-    connect(ActionFactory::actionStart(), SIGNAL(triggered()), SLOT(actionStart()));
-    connect(ActionFactory::actionPause(), SIGNAL(triggered()), SLOT(actionPause()));
-    connect(ActionFactory::actionStop(), SIGNAL(triggered()), SLOT(actionStop()));
-
-}
-
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
-    state = WORK;
-    systemTrayIcon = new QSystemTrayIcon(Default::App::icon(), this);
-    clock = new ClockView(this);
-    settings = new AdvancedSettings(this);
-
-    ui->setupUi(this);
     initActions();
     initDefaultMenu();
-
     setState(WORK);
-
     connect(settings, SIGNAL(signalColorChange(ClockState, QColor)), clock, SLOT(setColor(ClockState, QColor)));
     connect(settings, SIGNAL(signalSizeChanged(int, int)), clock, SLOT(setSize(int, int)));
     connect(clock, SIGNAL(startClicked()), SLOT(actionStart()));
@@ -64,6 +37,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 MainWindow::~MainWindow() {
     delete ui;
     delete systemTrayIcon;
+}
+
+void MainWindow::initDefaultMenu() {
+    connect(menu->getAction(ActionMenu::Action::EXIT), SIGNAL(triggered()), qApp, SLOT(quit()));
+    systemTrayIcon->setContextMenu(menu->getMenu());
+    systemTrayIcon->show();
+}
+
+void MainWindow::initActions() {
+    connect(ui->actionAdvanced_Settings, SIGNAL(triggered()), menu->getAction(ActionMenu::Action::SETTINGS), SLOT(trigger()));
+    connect(menu->getAction(ActionMenu::Action::SETTINGS), SIGNAL(triggered()), settings, SLOT(show()));
+    connect(menu->getAction(ActionMenu::Action::START), SIGNAL(triggered()), SLOT(actionStart()));
+    connect(menu->getAction(ActionMenu::Action::PAUSE), SIGNAL(triggered()), SLOT(actionPause()));
+    connect(menu->getAction(ActionMenu::Action::STOP), SIGNAL(triggered()), SLOT(actionStop()));
+
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
@@ -103,22 +91,23 @@ void MainWindow::setState(ClockState clockState) {
     this->state = clockState;
     switch (clockState) {
         case WORK:
-            ActionFactory::actionStart()->setVisible(false);
-            ActionFactory::actionPause()->setVisible(true);
-            ActionFactory::actionStop()->setVisible(true);
+            menu->getAction(ActionMenu::Action::START)->setVisible(false);
+            menu->getAction(ActionMenu::Action::PAUSE)->setVisible(true);
+            menu->getAction(ActionMenu::Action::STOP)->setVisible(true);
+
             break;
         case PAUSE:
-            ActionFactory::actionStart()->setVisible(true);
-            ActionFactory::actionPause()->setVisible(false);
-            ActionFactory::actionStop()->setVisible(true);
+            menu->getAction(ActionMenu::Action::START)->setVisible(true);
+            menu->getAction(ActionMenu::Action::PAUSE)->setVisible(false);
+            menu->getAction(ActionMenu::Action::STOP)->setVisible(true);
+
             break;
         default:
-            ActionFactory::actionStart()->setVisible(true);
-            ActionFactory::actionPause()->setVisible(false);
-            ActionFactory::actionStop()->setVisible(false);
+            menu->getAction(ActionMenu::Action::START)->setVisible(true);
+            menu->getAction(ActionMenu::Action::PAUSE)->setVisible(false);
+            menu->getAction(ActionMenu::Action::STOP)->setVisible(false);
             break;
     }
-
 
 }
 

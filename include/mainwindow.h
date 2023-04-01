@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "view/clockview.h"
+#include "ActionMenu.h"
 
 class QSystemTrayIcon;
 
@@ -21,10 +22,6 @@ public:
 
     ~MainWindow() override;
 
-    void initDefaultMenu();
-
-    void initActions();
-
 protected:
     void closeEvent(QCloseEvent *event) override;
 
@@ -41,12 +38,17 @@ private slots:
     void setState(ClockState clockState);
 
 private:
+    void initDefaultMenu();
+
+    void initActions();
+
     Ui::MainWindow *ui;
     QSystemTrayIcon *systemTrayIcon;
     quint64 seconds = 0;
     ClockView *clock;
     AdvancedSettings *settings;
-    ClockState state;
+    ClockState state = WORK;
+    ActionMenu *menu;
 };
 
 #endif // MAIN_WINDOW_H

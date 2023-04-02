@@ -4,13 +4,14 @@
 #include <QDebug>
 #include <QMenu>
 
-ClockView::ClockView(QWidget *parent, ActionMenu *actionMenu) : QWidget(parent),
-                                                                ui(new Ui::ClockView),
-                                                                colorWork(150, 255, 150),
-                                                                colorPause(255, 251, 120),
-                                                                colorBreak(255, 100, 100) {
-
+ClockView::ClockView(QWidget *parent, ActionMenu *actionMenu, Settings *mSettings) : QWidget(parent),
+                                                                                     ui(new Ui::ClockView) {
+    settings = mSettings;
     menu = actionMenu->getMenu();
+    colorWork = settings->getColorWork();
+    colorPause = settings->getColorPause();
+    colorBreak = settings->getColorStop();
+
     ui->setupUi(this);
     ui->lcdDisplay->display("000:00:00");
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);

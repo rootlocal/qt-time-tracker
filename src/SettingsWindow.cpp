@@ -3,59 +3,49 @@
 #include <QColorDialog>
 #include <QDebug>
 #include <QSettings>
+#include <QMessageBox>
 
-SettingsWindow::SettingsWindow(QWidget *parent) : QDialog(parent),
-                                                  ui(new Ui::SettingsWindow) {
-
-    settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "Computools", "Timer", this);
+SettingsWindow::SettingsWindow(QWidget *parent, Settings *mSettings) : QDialog(parent),
+                                                                       ui(new Ui::SettingsWindow) {
+    settings = mSettings;
+    width = settings->getWidth();
+    height = settings->getHeight();
+    colorWork = settings->getColorWork();
+    colorPause = settings->getColorPause();
+    colorStop = settings->getColorStop();
 
     ui->setupUi(this);
-}
 
-SettingsWindow::~SettingsWindow() {
-    delete ui;
-}
-
-void SettingsWindow::loadSettings() {
-    const auto work = settings->value("colors/work", QColor(150, 255, 150)).value<QColor>();
-    const auto pause = settings->value("colors/pause", QColor(255, 255, 120)).value<QColor>();
-    const auto stop = settings->value("colors/stop", QColor(255, 100, 100)).value<QColor>();
-    signalColorChange(ClockState::WORK, work);
-    signalColorChange(ClockState::PAUSE, pause);
-    signalColorChange(ClockState::STOP, stop);
-    const int width = settings->value("size/width", 124).toInt();
-    const int height = settings->value("size/height", 28).toInt();
-    signalSizeChanged(width, height);
     {
         QPalette pal = ui->btnClockWorkColor->palette();
-        pal.setColor(QPalette::Button, work);
+        pal.setColor(QPalette::Button, colorWork);
         ui->btnClockWorkColor->setAutoFillBackground(true);
         ui->btnClockWorkColor->setPalette(pal);
         ui->btnClockWorkColor->update();
     }
     {
         QPalette pal = ui->btnClockPauseColor->palette();
-        pal.setColor(QPalette::Button, pause);
+        pal.setColor(QPalette::Button, colorPause);
         ui->btnClockPauseColor->setAutoFillBackground(true);
         ui->btnClockPauseColor->setPalette(pal);
         ui->btnClockPauseColor->update();
     }
     {
         QPalette pal = ui->btnClockBreakColor->palette();
-        pal.setColor(QPalette::Button, stop);
+        pal.setColor(QPalette::Button, colorStop);
         ui->btnClockBreakColor->setAutoFillBackground(true);
         ui->btnClockBreakColor->setPalette(pal);
         ui->btnClockBreakColor->update();
     }
 }
 
-void SettingsWindow::saveSettings() {
-
+SettingsWindow::~SettingsWindow() {
+    delete ui;
 }
 
+
 void SettingsWindow::on_comboBox_currentIndexChanged(int index) {
-    int width = 128;
-    int height = 28;
+
     switch (index) {
         case 0:
             width = 100;
@@ -71,48 +61,69 @@ void SettingsWindow::on_comboBox_currentIndexChanged(int index) {
             height = 28;
             break;
     };
-    settings->setValue("size/width", width);
-    settings->setValue("size/height", height);
-    settings->sync();
+
     signalSizeChanged(width, height);
 }
 
 void SettingsWindow::slotSizeChanged() {
-    signalSizeChanged(ui->boxWidth->value(), ui->boxHeight->value());
+    width = ui->boxWidth->value();
+    height = ui->boxHeight->value();
+
+    emit signalSizeChanged(width, height);
 }
 
 void SettingsWindow::on_btnClockWorkColor_clicked() {
-    const QColor color = QColorDialog::getColor(QColor(150, 255, 150));
-    signalColorChange(WORK, color);
-    settings->setValue("colors/work", color);
-    settings->sync();
+    const QColor color = QColorDialog::getColor(colorWork);
+    if (!color.isValid()) return;
+    colorWork = color;
     QPalette pal = ui->btnClockWorkColor->palette();
     pal.setColor(QPalette::Button, color);
     ui->btnClockWorkColor->setAutoFillBackground(true);
     ui->btnClockWorkColor->setPalette(pal);
     ui->btnClockWorkColor->update();
+
+    emit signalColorChange(WORK, color);
 }
 
 void SettingsWindow::on_btnClockPauseColor_clicked() {
-    const QColor color = QColorDialog::getColor(QColor(255, 255, 120));
-    signalColorChange(PAUSE, color);
-    settings->setValue("colors/pause", color);
-    settings->sync();
+    const QColor color = QColorDialog::getColor(colorPause);
+    if (!color.isValid()) return;
+    colorPause = color;
     QPalette pal = ui->btnClockPauseColor->palette();
     pal.setColor(QPalette::Button, color);
     ui->btnClockPauseColor->setAutoFillBackground(true);
     ui->btnClockPauseColor->setPalette(pal);
     ui->btnClockPauseColor->update();
+
+    emit signalColorChange(PAUSE, color);
 }
 
 void SettingsWindow::on_btnClockBreakColor_clicked() {
-    const QColor color = QColorDialog::getColor(QColor(255, 100, 100));
-    signalColorChange(STOP, color);
-    settings->setValue("colors/stop", color);
-    settings->sync();
+    const QColor color = QColorDialog::getColor(colorPause);
+    if (!color.isValid()) return;
+    colorStop = color;
     QPalette pal = ui->btnClockBreakColor->palette();
     pal.setColor(QPalette::Button, color);
     ui->btnClockBreakColor->setAutoFillBackground(true);
     ui->btnClockBreakColor->setPalette(pal);
     ui->btnClockBreakColor->update();
+
+    emit signalColorChange(STOP, color);
+}
+
+void SettingsWindow::accept() {
+    settings->setWidth(width);
+    settings->setHeight(height);
+    settings->setColorWork(colorWork);
+    settings->setColorPause(colorPause);
+    settings->setColorStop(colorStop);
+    settings->write();
+
+    emit settingsWindowAccept();
+    this->hide();
+}
+
+void SettingsWindow::reject() {
+    emit settingsWindowReject();
+    this->hide();
 }

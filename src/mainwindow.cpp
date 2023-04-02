@@ -11,10 +11,12 @@ QT_USE_NAMESPACE
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
                                           ui(new Ui::MainWindow) {
-    systemTrayIcon = new QSystemTrayIcon(Default::App::icon(), this);
+    settings = new Settings(this);
     menu = new ActionMenu(this);
-    clock = new ClockView(this, menu);
-    settingsWindow = new SettingsWindow(nullptr);
+
+    systemTrayIcon = new QSystemTrayIcon(Default::App::icon(), this);
+    clock = new ClockView(this, menu, settings);
+    settingsWindow = new SettingsWindow(nullptr, settings);
     ui->setupUi(this);
 
     initActions();
@@ -25,14 +27,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(settingsWindow, SIGNAL(signalColorChange(ClockState, QColor)), clock, SLOT(setColor(ClockState, QColor)));
     connect(settingsWindow, SIGNAL(signalColorChange(ClockState, QColor)), clock, SLOT(setColor(ClockState, QColor)));
     connect(settingsWindow, SIGNAL(signalSizeChanged(int, int)), clock, SLOT(setSize(int, int)));
-    settingsWindow->loadSettings();
 
     connect(clock, SIGNAL(startClicked()), SLOT(actionStart()));
     connect(clock, SIGNAL(pauseClicked()), SLOT(actionPause()));
     clock->show();
 
     this->setWindowIcon(Default::App::icon());
-    this->setWindowTitle(tr("Computools Timer Cheker"));
+    this->setWindowTitle(tr("Timer Timer"));
     startTimer(1000);
 }
 
@@ -67,9 +68,9 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 void MainWindow::timerEvent(QTimerEvent *) {
     if (state == WORK) {
         seconds++;
-        const quint64 h = floor(seconds / 3600);
-        const quint64 m = floor((seconds % 3600) / 60);
-        const quint64 s = floor(seconds % 60);
+         auto h = (quint64) floor(seconds / 3600);
+         auto m = (quint64) floor((seconds % 3600) / 60);
+         auto s = (quint64) floor(seconds % 60);
         clock->setText(
                 QString("%1:%2:%3").arg(h, 3, 10, QChar('0')).arg(m, 2, 10, QChar('0')).arg(s, 2, 10, QChar('0')));
     }

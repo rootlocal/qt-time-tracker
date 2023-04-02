@@ -2,6 +2,8 @@
 #include <QColor>
 #include "Settings.h"
 
+QT_USE_NAMESPACE
+
 Settings::Settings(QObject *parent) : QObject(parent),
                                       qSettings(QSettings::IniFormat,
                                                 QSettings::UserScope,

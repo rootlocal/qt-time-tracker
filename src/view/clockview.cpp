@@ -2,6 +2,8 @@
 #include "ui_clockview.h"
 #include <QMouseEvent>
 
+QT_USE_NAMESPACE
+
 ClockView::ClockView(QWidget *parent, ActionMenu *actionMenu, Settings *mSettings) : QWidget(parent),
                                                                                      ui(new Ui::ClockView) {
     settings = mSettings;

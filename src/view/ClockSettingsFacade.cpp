@@ -1,5 +1,7 @@
 #include "view/ClockSettingsFacade.h"
 
+QT_USE_NAMESPACE
+
 ClockSettingsFacade::ClockSettingsFacade(QObject *parent, Settings *s) : QObject(parent), settings(s) {}
 
 ClockSettingsFacade::~ClockSettingsFacade() = default;

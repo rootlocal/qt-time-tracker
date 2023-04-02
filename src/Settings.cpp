@@ -1,6 +1,5 @@
 #include <QSettings>
 #include <QColor>
-#include <utility>
 #include "Settings.h"
 
 Settings::Settings(QObject *parent) : QObject(parent),
@@ -8,76 +7,63 @@ Settings::Settings(QObject *parent) : QObject(parent),
                                                 QSettings::UserScope,
                                                 SETTINGS_ORGANIZATION,
                                                 SETTINGS_APPLICATION_NAME, this) {
-    colorWork = QColor(150, 255, 150);
-    colorPause = QColor(255, 255, 120);
-    colorStop = QColor(255, 100, 100);
     load();
 }
 
 Settings::~Settings() = default;
 
 void Settings::load() {
-    colorWork = qSettings.value("colors/work", colorWork).value<QColor>();
-    colorPause = qSettings.value("colors/pause", colorPause).value<QColor>();
-    colorStop = qSettings.value("colors/stop", colorStop).value<QColor>();
-    width = qSettings.value("size/width", width).toInt();
-    height = qSettings.value("size/height", height).toInt();
-    timerWindowsPosition = qSettings.value("position/timer", QPoint(0, 0)).value<QPoint>();
+    timerColors.work = qSettings.value("timer/color_work", timerColors.work).value<QColor>();
+    timerColors.pause = qSettings.value("timer/color_pause", timerColors.pause).value<QColor>();
+    timerColors.stop = qSettings.value("timer/color_stop", timerColors.stop).value<QColor>();
+
+    timerWindowsSize = qSettings.value("timer/windows_size", timerWindowsSize).value<QSize>();
+    timerWindowsPosition = qSettings.value("timer/windows_position", timerWindowsPosition).value<QPoint>();
+    settingsGeometry = qSettings.value("settings/windows_geometry", settingsGeometry).value<QByteArray>();
 }
 
 void Settings::write() {
-    qSettings.setValue("colors/work", colorWork);
-    qSettings.setValue("colors/pause", colorPause);
-    qSettings.setValue("colors/stop", colorStop);
-    qSettings.setValue("size/width", width);
-    qSettings.setValue("size/height", height);
+    qSettings.setValue("timer/color_work", timerColors.work);
+    qSettings.setValue("timer/color_pause", timerColors.pause);
+    qSettings.setValue("timer/color_stop", timerColors.stop);
+    qSettings.setValue("timer/windows_size", timerWindowsSize);
 }
 
-int Settings::getWidth() const {
-    return width;
+const QSize &Settings::getTimerWindowsSize() const {
+    return timerWindowsSize;
 }
 
-void Settings::setWidth(int size) {
-    Settings::width = size;
+void Settings::setTimerWindowsSize(const QSize &size) {
+    Settings::timerWindowsSize = size;
 }
 
-int Settings::getHeight() const {
-    return height;
-}
-
-void Settings::setHeight(int size) {
-    Settings::height = size;
-}
-
-QColor Settings::getColorWork() {
-    return colorWork;
-}
-
-void Settings::setColorWork(QColor color) {
-    Settings::colorWork = std::move(color);
-}
-
-QColor Settings::getColorPause() {
-    return colorPause;
-}
-
-void Settings::setColorPause(QColor color) {
-    Settings::colorPause = std::move(color);
-}
-
-QColor Settings::getColorStop() {
-    return colorStop;
-}
-
-void Settings::setColorStop(QColor color) {
-    Settings::colorStop = std::move(color);
-}
-
-void Settings::savePosition(QPoint pos) {
-    qSettings.setValue("position/timer", timerWindowsPosition);
-    timerWindowsPosition = pos;
-}
-
-QPoint Settings::restorePosition() {
+const QPoint &Settings::getTimerWindowsPosition() const {
     return timerWindowsPosition;
+}
+
+void Settings::setTimerWindowsPosition(const QPoint &position) {
+    Settings::timerWindowsPosition = position;
+    qSettings.setValue("timer/windows_position", position);
+}
+
+const QByteArray &Settings::getSettingsGeometry() const {
+    return settingsGeometry;
+}
+
+void Settings::setSettingsGeometry(const QByteArray &geometry) {
+    Settings::settingsGeometry = geometry;
+    qSettings.setValue("settings/windows_geometry", geometry);
+}
+
+// COLORS
+const Settings::timerColorsStruct &Settings::getTimerColors() const {
+    return timerColors;
+}
+
+void Settings::setTimerColors(Settings::timerColorsStruct &colors) {
+    timerColors = colors;
+}
+
+const Settings::timerColorsStruct &Settings::getTimerColorsDefault() const {
+    return timerColorsDefault;
 }

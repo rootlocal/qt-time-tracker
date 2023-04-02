@@ -23,10 +23,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     initDefaultMenu();
     setState(WORK);
 
-    connect(settingsWindow, SIGNAL(signalSizeChanged(int, int)), clock, SLOT(setSize(int, int)));
+    connect(settingsWindow, SIGNAL(signalSizeChanged(QSize)), clock, SLOT(setSize(QSize)));
     connect(settingsWindow, SIGNAL(signalColorChange(ClockState, QColor)), clock, SLOT(setColor(ClockState, QColor)));
-    connect(settingsWindow, SIGNAL(signalColorChange(ClockState, QColor)), clock, SLOT(setColor(ClockState, QColor)));
-    connect(settingsWindow, SIGNAL(signalSizeChanged(int, int)), clock, SLOT(setSize(int, int)));
 
     connect(clock, SIGNAL(startClicked()), SLOT(actionStart()));
     connect(clock, SIGNAL(pauseClicked()), SLOT(actionPause()));

@@ -28,59 +28,27 @@
     <name>AdvancedSettings</name>
     <message>
         <source>Settings</source>
-        <translation>Настройки</translation>
+        <translation type="vanished">Настройки</translation>
     </message>
     <message>
         <source>Clock</source>
-        <translation>Время</translation>
+        <translation type="vanished">Время</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Размер</translation>
-    </message>
-    <message>
-        <source>Small</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Normal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Big</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use Custom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Размер</translation>
     </message>
     <message>
         <source>Width:</source>
-        <translation>Ширина:</translation>
+        <translation type="vanished">Ширина:</translation>
     </message>
     <message>
         <source>Height:</source>
-        <translation>Высота:</translation>
+        <translation type="vanished">Высота:</translation>
     </message>
     <message>
         <source>Colors</source>
-        <translation>Цвета</translation>
-    </message>
-    <message>
-        <source>Work:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pause:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Break:</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Цвета</translation>
     </message>
     <message>
         <source>Pause</source>
@@ -129,7 +97,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Computools Timer Cheker</source>
+        <source>Timer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -209,13 +177,6 @@
     </message>
     <message>
         <source>&amp;Reset</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StatusIndicator</name>
-    <message>
-        <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

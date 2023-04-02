@@ -15,44 +15,42 @@ public:
 
     ~Settings() override;
 
+    struct timerColorsStruct {
+        QColor work = QColor(150, 255, 150);
+        QColor pause = QColor(255, 255, 120);
+        QColor stop = QColor(255, 100, 100);
+    };
+
     void load();
 
     void write();
 
-    int getWidth() const;
+    const QSize &getTimerWindowsSize() const;
 
-    void setWidth(int size);
+    void setTimerWindowsSize(const QSize &size);
 
-    int getHeight() const;
+    const QPoint &getTimerWindowsPosition() const;
 
-    void setHeight(int size);
+    void setTimerWindowsPosition(const QPoint &position);
 
-    QColor getColorWork();
+    const QByteArray &getSettingsGeometry() const;
 
-    void setColorWork(QColor color);
+    void setSettingsGeometry(const QByteArray &geometry);
 
-    QColor getColorPause();
+    // COLORS
+    const timerColorsStruct &getTimerColors() const;
 
-    void setColorPause(QColor color);
+    void setTimerColors(timerColorsStruct &colors);
 
-    QColor getColorStop();
-
-    void setColorStop(QColor color);
-
-    void savePosition(QPoint pos);
-
-    QPoint restorePosition();
+    const timerColorsStruct &getTimerColorsDefault() const;
 
 private:
     QSettings qSettings;
-    int width = 124;
-    int height = 28;
-    QColor colorWork;
-    QColor colorPause;
-    QColor colorStop;
-
-    QPoint timerWindowsPosition;
-    //QSize timerWindowsSize;
+    QPoint timerWindowsPosition = QPoint(0, 0);
+    QSize timerWindowsSize = QSize(124, 28);
+    QByteArray settingsGeometry;
+    timerColorsStruct timerColors;
+    timerColorsStruct timerColorsDefault;
 };
 
 

@@ -8,34 +8,30 @@
 SettingsWindow::SettingsWindow(QWidget *parent, Settings *mSettings) : QDialog(parent),
                                                                        ui(new Ui::SettingsWindow) {
     settings = mSettings;
-    width = settings->getWidth();
-    height = settings->getHeight();
-    colorWork = settings->getColorWork();
-    colorPause = settings->getColorPause();
-    colorStop = settings->getColorStop();
-
+    timerSize = settings->getTimerWindowsSize();
+    timerColors = settings->getTimerColors();
     ui->setupUi(this);
 
     {
         QPalette pal = ui->btnClockWorkColor->palette();
-        pal.setColor(QPalette::Button, colorWork);
+        pal.setColor(QPalette::Button, timerColors.work);
         ui->btnClockWorkColor->setAutoFillBackground(true);
         ui->btnClockWorkColor->setPalette(pal);
         ui->btnClockWorkColor->update();
     }
     {
         QPalette pal = ui->btnClockPauseColor->palette();
-        pal.setColor(QPalette::Button, colorPause);
+        pal.setColor(QPalette::Button, timerColors.pause);
         ui->btnClockPauseColor->setAutoFillBackground(true);
         ui->btnClockPauseColor->setPalette(pal);
         ui->btnClockPauseColor->update();
     }
     {
-        QPalette pal = ui->btnClockBreakColor->palette();
-        pal.setColor(QPalette::Button, colorStop);
-        ui->btnClockBreakColor->setAutoFillBackground(true);
-        ui->btnClockBreakColor->setPalette(pal);
-        ui->btnClockBreakColor->update();
+        QPalette pal = ui->btnClockStopColor->palette();
+        pal.setColor(QPalette::Button, timerColors.stop);
+        ui->btnClockStopColor->setAutoFillBackground(true);
+        ui->btnClockStopColor->setPalette(pal);
+        ui->btnClockStopColor->update();
     }
 }
 
@@ -43,80 +39,96 @@ SettingsWindow::~SettingsWindow() {
     delete ui;
 }
 
-
 void SettingsWindow::on_comboBox_currentIndexChanged(int index) {
 
     switch (index) {
         case 0:
-            width = 100;
-            height = 24;
+            timerSize.setWidth(100);
+            timerSize.setHeight(24);
             break;
         case 2:
-            width = 134;
-            height = 34;
+            timerSize.setWidth(134);
+            timerSize.setHeight(34);
             break;
         case 1:
         default:
-            width = 124;
-            height = 28;
+            timerSize.setWidth(124);
+            timerSize.setHeight(28);
             break;
-    };
+    }
 
-    signalSizeChanged(width, height);
+    emit signalSizeChanged(timerSize);
 }
 
 void SettingsWindow::slotSizeChanged() {
-    width = ui->boxWidth->value();
-    height = ui->boxHeight->value();
+    int width = ui->boxWidth->value();
+    int height = ui->boxHeight->value();
 
-    emit signalSizeChanged(width, height);
+    timerSize = QSize(width, height);
+    emit signalSizeChanged(timerSize);
 }
 
 void SettingsWindow::on_btnClockWorkColor_clicked() {
-    const QColor color = QColorDialog::getColor(colorWork);
+    const QColor color = QColorDialog::getColor(timerColors.work);
     if (!color.isValid()) return;
-    colorWork = color;
-    QPalette pal = ui->btnClockWorkColor->palette();
-    pal.setColor(QPalette::Button, color);
-    ui->btnClockWorkColor->setAutoFillBackground(true);
-    ui->btnClockWorkColor->setPalette(pal);
-    ui->btnClockWorkColor->update();
-
-    emit signalColorChange(WORK, color);
+    timerColors.work = color;
+    colorChange(WORK, color);
 }
 
 void SettingsWindow::on_btnClockPauseColor_clicked() {
-    const QColor color = QColorDialog::getColor(colorPause);
+    const QColor color = QColorDialog::getColor(timerColors.pause);
     if (!color.isValid()) return;
-    colorPause = color;
-    QPalette pal = ui->btnClockPauseColor->palette();
-    pal.setColor(QPalette::Button, color);
-    ui->btnClockPauseColor->setAutoFillBackground(true);
-    ui->btnClockPauseColor->setPalette(pal);
-    ui->btnClockPauseColor->update();
-
-    emit signalColorChange(PAUSE, color);
+    timerColors.pause = color;
+    colorChange(PAUSE, color);
 }
 
-void SettingsWindow::on_btnClockBreakColor_clicked() {
-    const QColor color = QColorDialog::getColor(colorPause);
+void SettingsWindow::on_btnClockStopColor_clicked() {
+    const QColor color = QColorDialog::getColor(timerColors.stop);
     if (!color.isValid()) return;
-    colorStop = color;
-    QPalette pal = ui->btnClockBreakColor->palette();
-    pal.setColor(QPalette::Button, color);
-    ui->btnClockBreakColor->setAutoFillBackground(true);
-    ui->btnClockBreakColor->setPalette(pal);
-    ui->btnClockBreakColor->update();
+    timerColors.stop = color;
+    colorChange(STOP, color);
+}
 
-    emit signalColorChange(STOP, color);
+void SettingsWindow::on_btnResetColor_clicked() {
+    timerColors = settings->getTimerColorsDefault();
+    colorChange(WORK, timerColors.work);
+    colorChange(PAUSE, timerColors.pause);
+    colorChange(STOP, timerColors.stop);
+}
+
+void SettingsWindow::colorChange(ClockState state, const QColor &color) {
+    QPalette palette;
+
+    switch (state) {
+        case WORK:
+            palette = ui->btnClockWorkColor->palette();
+            palette.setColor(QPalette::Button, color);
+            ui->btnClockWorkColor->setAutoFillBackground(true);
+            ui->btnClockWorkColor->setPalette(palette);
+            ui->btnClockWorkColor->update();
+            break;
+        case PAUSE:
+            palette = ui->btnClockPauseColor->palette();
+            palette.setColor(QPalette::Button, color);
+            ui->btnClockPauseColor->setAutoFillBackground(true);
+            ui->btnClockPauseColor->setPalette(palette);
+            ui->btnClockPauseColor->update();
+            break;
+        case STOP:
+            palette = ui->btnClockStopColor->palette();
+            palette.setColor(QPalette::Button, color);
+            ui->btnClockStopColor->setAutoFillBackground(true);
+            ui->btnClockStopColor->setPalette(palette);
+            ui->btnClockStopColor->update();
+            break;
+    }
+
+    emit signalColorChange(state, color);
 }
 
 void SettingsWindow::accept() {
-    settings->setWidth(width);
-    settings->setHeight(height);
-    settings->setColorWork(colorWork);
-    settings->setColorPause(colorPause);
-    settings->setColorStop(colorStop);
+    settings->setTimerWindowsSize(timerSize);
+    settings->setTimerColors(timerColors);
     settings->write();
 
     emit settingsWindowAccept();
@@ -126,4 +138,17 @@ void SettingsWindow::accept() {
 void SettingsWindow::reject() {
     emit settingsWindowReject();
     this->hide();
+}
+
+void SettingsWindow::hide() {
+    settings->setSettingsGeometry(saveGeometry());
+    QDialog::hide();
+}
+
+void SettingsWindow::show() {
+    if (!settings->getSettingsGeometry().isEmpty()) {
+        restoreGeometry(settings->getSettingsGeometry());
+    }
+
+    QDialog::show();
 }

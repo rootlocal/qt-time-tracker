@@ -1,9 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file alias="icon_tray">icons/icon.png</file>
-        <file alias="icon_ellipse_green">icons/green.png</file>
-        <file alias="icon_ellipse_red">icons/red.png</file>
-        <file alias="icon_ellipse_yellow">icons/yellow.png</file>
         <file alias="icon_arrow_down">icons/arrow_down.png</file>
         <file alias="icon_arrow_up">icons/arrow_up.png</file>
     </qresource>

@@ -5,11 +5,14 @@
 #include <QSettings>
 #include <QPoint>
 #include <QSize>
+#include <QColor>
 
 #define SETTINGS_ORGANIZATION "rootlocal"
 #define SETTINGS_APPLICATION_NAME "timer"
 
 class Settings : public QObject {
+Q_OBJECT
+
 public:
     explicit Settings(QObject *parent = nullptr);
 
@@ -25,17 +28,25 @@ public:
 
     void write();
 
-    const QSize &getTimerWindowsSize() const;
+    const QSize &getTimerWindowCustomSize() const;
 
-    void setTimerWindowsSize(const QSize &size);
+    void setTimerWindowCustomSize(const QSize &size);
 
-    const QPoint &getTimerWindowsPosition() const;
+    const QString &getTimerWindowSize() const;
 
-    void setTimerWindowsPosition(const QPoint &position);
+    void setTimerWindowSize(const QString &size);
 
-    const QByteArray &getSettingsGeometry() const;
+    const QPoint &getTimerWindowPosition() const;
 
-    void setSettingsGeometry(const QByteArray &geometry);
+    void setTimerWindowPosition(const QPoint &position);
+
+    const bool &getIsTimerCustomSize() const;
+
+    void setIsTimerCustomSize(const bool &value);
+
+    const QByteArray &getSettingGeometry() const;
+
+    void setSettingGeometry(const QByteArray &geometry);
 
     // COLORS
     const timerColorsStruct &getTimerColors() const;
@@ -44,13 +55,26 @@ public:
 
     const timerColorsStruct &getTimerColorsDefault() const;
 
+    QList<QString> getTimerWindowSizesItems();
+
+    QString getTimerWindowSizesItem(int index);
+
+    QMap<QString, QSize> getTimerWindowSizes();
+
+    QSize getTimerWindowSize(const QString &name);
+
 private:
     QSettings qSettings;
-    QPoint timerWindowsPosition = QPoint(0, 0);
-    QSize timerWindowsSize = QSize(124, 28);
+    QPoint timerWindowPosition = QPoint(0, 0);
+    QSize timerWindowCustomSize = QSize(124, 28);
+    QString timerWindowSize = "Normal";
     QByteArray settingsGeometry;
     timerColorsStruct timerColors;
     timerColorsStruct timerColorsDefault;
+    bool isTimerCustomSize = false;
+
+    QList<QString> timerWindowSizesItems;
+    QMap<QString, QSize> timerWindowSizes;
 };
 
 

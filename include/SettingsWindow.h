@@ -22,16 +22,11 @@ public:
 
     void saveSettings();
 
-
 signals:
 
     void signalSizeChanged(QSize);
 
     void signalColorChange(ClockState, QColor);
-
-signals:
-
-    void mainWindowShow();
 
     void settingsWindowAccept();
 
@@ -49,8 +44,6 @@ private slots:
 
     void on_comboBox_currentIndexChanged(int index);
 
-    void slotSizeChanged();
-
     void on_btnClockWorkColor_clicked();
 
     void on_btnClockPauseColor_clicked();
@@ -59,13 +52,16 @@ private slots:
 
     void on_btnResetColor_clicked();
 
+    void isCustomSizeGroupBoxActionClicked(bool state);
+
 private:
     void colorChange(ClockState state, const QColor &color);
 
     Ui::SettingsWindow *ui;
     Settings *settings;
-    QSize timerSize = QSize(124, 28);
+    QString timerSize;
     Settings::timerColorsStruct timerColors;
+
 };
 
 #endif // ADVANCED_SETTINGS_H

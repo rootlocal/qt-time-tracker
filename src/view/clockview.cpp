@@ -5,14 +5,15 @@
 ClockView::ClockView(QWidget *parent, ActionMenu *actionMenu, Settings *mSettings) : QWidget(parent),
                                                                                      ui(new Ui::ClockView) {
     settings = mSettings;
+    clockSettingsFacade = new ClockSettingsFacade(this, settings);
     menu = actionMenu->getMenu();
     colors = settings->getTimerColors();
 
     ui->setupUi(this);
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-    setSize(settings->getTimerWindowsSize());
+    setSize(clockSettingsFacade->getWindowsSize());
 
-    QPoint savedPosition = settings->getTimerWindowsPosition();
+    QPoint savedPosition = settings->getTimerWindowPosition();
     if (!savedPosition.isNull()) {
         this->move(savedPosition.x(), savedPosition.y());
     }
@@ -95,7 +96,7 @@ void ClockView::mouseMoveEvent(QMouseEvent *event) {
         const QPoint p = this->pos() + (event->globalPos() - oldMousePosition);
         oldMousePosition = event->globalPos();
         move(p);
-        settings->setTimerWindowsPosition(this->pos());
+        settings->setTimerWindowPosition(this->pos());
         event->accept();
     }
 }

@@ -11,8 +11,6 @@ class QSystemTrayIcon;
 
 class ClockView;
 
-class AdvancedSettings;
-
 namespace Ui {
     class MainWindow;
 }

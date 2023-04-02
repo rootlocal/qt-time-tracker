@@ -3,6 +3,11 @@
 
 #include <QObject>
 #include <QSettings>
+#include <QPoint>
+#include <QSize>
+
+#define SETTINGS_ORGANIZATION "rootlocal"
+#define SETTINGS_APPLICATION_NAME "timer"
 
 class Settings : public QObject {
 public:
@@ -34,6 +39,10 @@ public:
 
     void setColorStop(QColor color);
 
+    void savePosition(QPoint pos);
+
+    QPoint restorePosition();
+
 private:
     QSettings qSettings;
     int width = 124;
@@ -41,6 +50,9 @@ private:
     QColor colorWork;
     QColor colorPause;
     QColor colorStop;
+
+    QPoint timerWindowsPosition;
+    //QSize timerWindowsSize;
 };
 
 

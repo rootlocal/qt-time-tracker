@@ -16,8 +16,13 @@ int main(int argc, char *argv[]) {
 
         QApplication app(argc, argv);
         auto translator = new QTranslator(&app);
+        auto translatorQtBase = new QTranslator(&app);
+
         translator->load(QLocale::system(), QString(":/lang/application"), QString("_"));
         QApplication::installTranslator(translator);
+        translatorQtBase->load(QLocale::system(), QString(":/lang/qtbase"), QString("_"));
+        QApplication::installTranslator(translatorQtBase);
+
         QApplication::setQuitOnLastWindowClosed(false);
         MainWindow mainWindow;
         //mainWindow.show();

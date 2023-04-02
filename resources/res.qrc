@@ -7,5 +7,6 @@
 
     <qresource prefix="/lang">
         <file alias="application_ru_RU">translations/application_ru.qm</file>
+        <file alias="qtbase_ru_RU">qt/qtbase_ru.qm</file>
     </qresource>
 </RCC>

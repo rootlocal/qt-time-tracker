@@ -108,76 +108,80 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;General</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minimize app to Tray</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Proxy Server</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Enabled</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Width:</source>
-        <translation type="unfinished">Ширина:</translation>
+        <translation>Ширина:</translation>
     </message>
     <message>
         <source>Height:</source>
-        <translation type="unfinished">Высота:</translation>
-    </message>
-    <message>
-        <source>Страница</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Small</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Normal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Big</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>Высота:</translation>
     </message>
     <message>
         <source>Work:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>work</source>
-        <translation type="unfinished"></translation>
+        <translation>Работа:</translation>
     </message>
     <message>
         <source>Pause:</source>
-        <translation type="unfinished"></translation>
+        <translation>Пауза:</translation>
     </message>
     <message>
         <source>Pause</source>
-        <translation type="unfinished">Пауза</translation>
+        <translation type="obsolete">Пауза</translation>
     </message>
     <message>
-        <source>Break:</source>
+        <source>&amp;Timer Size</source>
+        <translation>&amp;Размер таймера</translation>
+    </message>
+    <message>
+        <source>&amp;Custom size</source>
+        <translation>&amp;Свой размер</translation>
+    </message>
+    <message>
+        <source>&amp;Standard Size</source>
+        <translation>&amp;Стандартный размер</translation>
+    </message>
+    <message>
+        <source>Size:</source>
+        <translation>Размер:</translation>
+    </message>
+    <message>
+        <source>Новый элемент 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Break</source>
+        <source>Новый элемент 2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Reset</source>
+        <source>Новый элемент 3</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Timer Color</source>
+        <translation>&amp;Цвет таймера</translation>
+    </message>
+    <message>
+        <source>&amp;Colors</source>
+        <translation>&amp;Цвета</translation>
+    </message>
+    <message>
+        <source>Work color</source>
+        <translation>Цвет Работа</translation>
+    </message>
+    <message>
+        <source>Pause color</source>
+        <translation>Цвет Пауза</translation>
+    </message>
+    <message>
+        <source>Stop:</source>
+        <translation>Стоп:</translation>
+    </message>
+    <message>
+        <source>Stop color</source>
+        <translation>Цвет остановлен</translation>
+    </message>
+    <message>
+        <source>&amp;Reset Default</source>
+        <translation>&amp;Сбросить по умолчанию</translation>
     </message>
 </context>
 </TS>

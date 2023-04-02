@@ -1,25 +1,20 @@
 #include "view/clockview.h"
 #include "ui_clockview.h"
 #include <QMouseEvent>
-#include <QDebug>
-#include <QMenu>
 
 ClockView::ClockView(QWidget *parent, ActionMenu *actionMenu, Settings *mSettings) : QWidget(parent),
                                                                                      ui(new Ui::ClockView) {
     settings = mSettings;
     menu = actionMenu->getMenu();
-    colorWork = settings->getColorWork();
-    colorPause = settings->getColorPause();
-    colorBreak = settings->getColorStop();
-    savedPosition = settings->restorePosition();
+    colors = settings->getTimerColors();
 
     ui->setupUi(this);
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-    setSize(settings->getWidth(), settings->getHeight());
+    setSize(settings->getTimerWindowsSize());
 
-    if (savedPosition.x() != 0 && savedPosition.y() != 0) {
-        // TODO: сделать через restoreGeometry(); saveGeometry();
-        move(savedPosition.x(), savedPosition.y());
+    QPoint savedPosition = settings->getTimerWindowsPosition();
+    if (!savedPosition.isNull()) {
+        this->move(savedPosition.x(), savedPosition.y());
     }
 
     ui->lcdDisplay->display("000:00:00");
@@ -38,8 +33,8 @@ void ClockView::setText(const QString &text) {
     ui->lcdDisplay->display(text);
 }
 
-void ClockView::setSize(int width, int height) {
-    this->resize(QSize(width, height));
+void ClockView::setSize(QSize size) {
+    this->resize(size);
 }
 
 void ClockView::setState(ClockState clockState) {
@@ -48,40 +43,40 @@ void ClockView::setState(ClockState clockState) {
     switch (state) {
         case WORK:
             ui->lcdDisplay->setStyleSheet(tr("background-color: rgb(%1, %2, %3);")
-                                                  .arg(colorWork.red())
-                                                  .arg(colorWork.green())
-                                                  .arg(colorWork.blue()));
+                                                  .arg(colors.work.red())
+                                                  .arg(colors.work.green())
+                                                  .arg(colors.work.blue()));
             break;
         case PAUSE:
             ui->lcdDisplay->setStyleSheet(tr("background-color: rgb(%1, %2, %3);")
-                                                  .arg(colorPause.red())
-                                                  .arg(colorPause.green())
-                                                  .arg(colorPause.blue()));
+                                                  .arg(colors.pause.red())
+                                                  .arg(colors.pause.green())
+                                                  .arg(colors.pause.blue()));
             break;
         case STOP:
         default:
             ui->lcdDisplay->setStyleSheet(tr("background-color: rgb(%1, %2, %3);")
-                                                  .arg(colorBreak.red())
-                                                  .arg(colorBreak.green())
-                                                  .arg(colorBreak.blue()));
+                                                  .arg(colors.stop.red())
+                                                  .arg(colors.stop.green())
+                                                  .arg(colors.stop.blue()));
             break;
-    };
+    }
 }
 
 void ClockView::setColor(ClockState clockState, const QColor &color) {
     switch (clockState) {
         case WORK:
-            colorWork = color;
+            colors.work = color;
             break;
         case PAUSE:
-            colorPause = color;
+            colors.pause = color;
             break;
         case STOP:
-            colorBreak = color;
+            colors.stop = color;
             break;
         default:
             return;
-    };
+    }
 
     if (clockState == state) {
         ui->lcdDisplay->setStyleSheet(tr("background-color: rgb(%1, %2, %3);")
@@ -100,7 +95,7 @@ void ClockView::mouseMoveEvent(QMouseEvent *event) {
         const QPoint p = this->pos() + (event->globalPos() - oldMousePosition);
         oldMousePosition = event->globalPos();
         move(p);
-        settings->savePosition(this->pos());
+        settings->setTimerWindowsPosition(this->pos());
         event->accept();
     }
 }

@@ -22,9 +22,10 @@ public:
 
     void saveSettings();
 
+
 signals:
 
-    void signalSizeChanged(int, int);
+    void signalSizeChanged(QSize);
 
     void signalColorChange(ClockState, QColor);
 
@@ -38,6 +39,10 @@ signals:
 
 private slots:
 
+    void hide();
+
+    void show();
+
     void accept() override;
 
     void reject() override;
@@ -50,17 +55,17 @@ private slots:
 
     void on_btnClockPauseColor_clicked();
 
-    void on_btnClockBreakColor_clicked();
+    void on_btnClockStopColor_clicked();
+
+    void on_btnResetColor_clicked();
 
 private:
+    void colorChange(ClockState state, const QColor &color);
+
     Ui::SettingsWindow *ui;
     Settings *settings;
-
-    int width = 124;
-    int height = 28;
-    QColor colorWork;
-    QColor colorPause;
-    QColor colorStop;
+    QSize timerSize = QSize(124, 28);
+    Settings::timerColorsStruct timerColors;
 };
 
 #endif // ADVANCED_SETTINGS_H

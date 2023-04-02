@@ -34,7 +34,7 @@ public slots:
 
     void setText(const QString &text);
 
-    void setSize(int width, int height);
+    void setSize(QSize size);
 
     void setState(ClockState state);
 
@@ -58,12 +58,9 @@ private:
     QPoint oldMousePosition;
     bool isMouseDrag = false;
     ClockState state = WORK;
-    QColor colorWork;
-    QColor colorPause;
-    QColor colorBreak;
+    Settings::timerColorsStruct colors;
     QMenu *menu;
     Settings *settings;
-    QPoint savedPosition;
 };
 
 #endif // CLOCK_VIEW_H

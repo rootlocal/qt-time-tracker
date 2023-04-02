@@ -63,6 +63,7 @@ private:
     QColor colorBreak;
     QMenu *menu;
     Settings *settings;
+    QPoint savedPosition;
 };
 
 #endif // CLOCK_VIEW_H

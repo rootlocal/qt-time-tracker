@@ -4,8 +4,10 @@
 #include "Settings.h"
 
 Settings::Settings(QObject *parent) : QObject(parent),
-                                      qSettings(QSettings::IniFormat, QSettings::UserScope,
-                                                "tracker", "timer", this) {
+                                      qSettings(QSettings::IniFormat,
+                                                QSettings::UserScope,
+                                                SETTINGS_ORGANIZATION,
+                                                SETTINGS_APPLICATION_NAME, this) {
     colorWork = QColor(150, 255, 150);
     colorPause = QColor(255, 255, 120);
     colorStop = QColor(255, 100, 100);
@@ -20,6 +22,7 @@ void Settings::load() {
     colorStop = qSettings.value("colors/stop", colorStop).value<QColor>();
     width = qSettings.value("size/width", width).toInt();
     height = qSettings.value("size/height", height).toInt();
+    timerWindowsPosition = qSettings.value("position/timer", QPoint(0, 0)).value<QPoint>();
 }
 
 void Settings::write() {
@@ -68,4 +71,13 @@ QColor Settings::getColorStop() {
 
 void Settings::setColorStop(QColor color) {
     Settings::colorStop = std::move(color);
+}
+
+void Settings::savePosition(QPoint pos) {
+    qSettings.setValue("position/timer", timerWindowsPosition);
+    timerWindowsPosition = pos;
+}
+
+QPoint Settings::restorePosition() {
+    return timerWindowsPosition;
 }

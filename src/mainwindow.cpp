@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     systemTrayIcon = new QSystemTrayIcon(Default::App::icon(), this);
     clock = new ClockView(this, menu, settings);
-    settingsWindow = new SettingsWindow(nullptr, settings);
+    settingsWindow = new SettingsWindow(this, settings);
     ui->setupUi(this);
 
     initActions();
@@ -30,10 +30,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     connect(clock, SIGNAL(startClicked()), SLOT(actionStart()));
     connect(clock, SIGNAL(pauseClicked()), SLOT(actionPause()));
+
     clock->show();
 
     this->setWindowIcon(Default::App::icon());
-    this->setWindowTitle(tr("Timer Timer"));
+    this->setWindowTitle(tr("Timer"));
     startTimer(1000);
 }
 
@@ -51,8 +52,7 @@ void MainWindow::initDefaultMenu() {
 }
 
 void MainWindow::initActions() {
-    connect(ui->actionAdvanced_Settings, SIGNAL(triggered()), menu->getAction(ActionMenu::Action::SETTINGS),
-            SLOT(trigger()));
+    connect(ui->actionAdvanced_Settings, SIGNAL(triggered()), menu->getAction(ActionMenu::Action::SETTINGS), SLOT(trigger()));
     connect(menu->getAction(ActionMenu::Action::SETTINGS), SIGNAL(triggered()), settingsWindow, SLOT(show()));
     connect(menu->getAction(ActionMenu::Action::START), SIGNAL(triggered()), SLOT(actionStart()));
     connect(menu->getAction(ActionMenu::Action::PAUSE), SIGNAL(triggered()), SLOT(actionPause()));
@@ -68,45 +68,48 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 void MainWindow::timerEvent(QTimerEvent *) {
     if (state == WORK) {
         seconds++;
-         auto h = (quint64) floor(seconds / 3600);
-         auto m = (quint64) floor((seconds % 3600) / 60);
-         auto s = (quint64) floor(seconds % 60);
-        clock->setText(
-                QString("%1:%2:%3").arg(h, 3, 10, QChar('0')).arg(m, 2, 10, QChar('0')).arg(s, 2, 10, QChar('0')));
+        auto h = (quint64) floor(seconds / 3600);
+        auto m = (quint64) floor((seconds % 3600) / 60);
+        auto s = (quint64) floor(seconds % 60);
+        auto clockText = QString("%1:%2:%3")
+                .arg(h, 3, 10, QChar('0'))
+                .arg(m, 2, 10, QChar('0'))
+                .arg(s, 2, 10, QChar('0'));
+
+        emit clock->setText(clockText);
     }
 }
 
 void MainWindow::actionStart() {
     if (state != WORK) {
-        setState(WORK);
+        emit setState(WORK);
     }
 }
 
 void MainWindow::actionPause() {
-    setState(PAUSE);
+    emit setState(PAUSE);
 }
 
 void MainWindow::actionStop() {
     seconds = 0;
-    clock->setText("000:00:00");
-    setState(STOP);
+    emit clock->setText("000:00:00");
+    emit setState(STOP);
 }
 
 void MainWindow::setState(ClockState clockState) {
-    clock->setState(clockState);
+    emit clock->setState(clockState);
     this->state = clockState;
+
     switch (clockState) {
         case WORK:
             menu->getAction(ActionMenu::Action::START)->setVisible(false);
             menu->getAction(ActionMenu::Action::PAUSE)->setVisible(true);
             menu->getAction(ActionMenu::Action::STOP)->setVisible(true);
-
             break;
         case PAUSE:
             menu->getAction(ActionMenu::Action::START)->setVisible(true);
             menu->getAction(ActionMenu::Action::PAUSE)->setVisible(false);
             menu->getAction(ActionMenu::Action::STOP)->setVisible(true);
-
             break;
         default:
             menu->getAction(ActionMenu::Action::START)->setVisible(true);
@@ -116,5 +119,3 @@ void MainWindow::setState(ClockState clockState) {
     }
 
 }
-
-

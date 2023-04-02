@@ -11,12 +11,21 @@ ClockView::ClockView(QWidget *parent, ActionMenu *actionMenu, Settings *mSetting
     colorWork = settings->getColorWork();
     colorPause = settings->getColorPause();
     colorBreak = settings->getColorStop();
+    savedPosition = settings->restorePosition();
 
     ui->setupUi(this);
-    ui->lcdDisplay->display("000:00:00");
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    setSize(settings->getWidth(), settings->getHeight());
+
+    if (savedPosition.x() != 0 && savedPosition.y() != 0) {
+        // TODO: сделать через restoreGeometry(); saveGeometry();
+        move(savedPosition.x(), savedPosition.y());
+    }
+
+    ui->lcdDisplay->display("000:00:00");
+
     setState(STOP);
-    setSize(124, 28);
+
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showContextMenu(QPoint)));
 }
@@ -91,6 +100,7 @@ void ClockView::mouseMoveEvent(QMouseEvent *event) {
         const QPoint p = this->pos() + (event->globalPos() - oldMousePosition);
         oldMousePosition = event->globalPos();
         move(p);
+        settings->savePosition(this->pos());
         event->accept();
     }
 }

@@ -1,7 +1,8 @@
 #ifndef MAIN_WINDOW_H
 #define MAIN_WINDOW_H
 
-#include <QMainWindow>
+#include <QWidget>
+#include <QSystemTrayIcon>
 #include "view/clockview.h"
 #include "ActionMenu.h"
 #include "SettingsWindow.h"
@@ -11,11 +12,8 @@ class QSystemTrayIcon;
 
 class ClockView;
 
-namespace Ui {
-    class MainWindow;
-}
 
-class MainWindow : public QMainWindow {
+class MainWindow : public QWidget {
 Q_OBJECT
 public:
 
@@ -44,12 +42,13 @@ private slots:
 
     void setState(ClockState clockState);
 
+    void iconActivated(QSystemTrayIcon::ActivationReason reason);
+
 private:
     void initDefaultMenu();
 
     void initActions();
 
-    Ui::MainWindow *ui;
     QSystemTrayIcon *systemTrayIcon;
     quint64 seconds = 0;
     ClockView *clock;

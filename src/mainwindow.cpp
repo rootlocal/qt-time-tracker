@@ -1,23 +1,21 @@
 #include <QSystemTrayIcon>
 #include <QCloseEvent>
 #include <cmath>
+#include <QGuiApplication>
 #include "global.h"
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include "view/clockview.h"
 #include "SettingsWindow.h"
 
 QT_USE_NAMESPACE
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
-                                          ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     settings = new Settings(this);
     menu = new ActionMenu(this);
 
     systemTrayIcon = new QSystemTrayIcon(Default::App::icon(), this);
     clock = new ClockView(this, menu, settings);
     settingsWindow = new SettingsWindow(this, settings);
-    ui->setupUi(this);
 
     initActions();
     initDefaultMenu();
@@ -25,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     connect(settingsWindow, SIGNAL(signalSizeChanged(QSize)), clock, SLOT(setSize(QSize)));
     connect(settingsWindow, SIGNAL(signalColorChange(ClockState, QColor)), clock, SLOT(setColor(ClockState, QColor)));
+    connect(systemTrayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this,
+            SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
 
     connect(clock, SIGNAL(startClicked()), SLOT(actionStart()));
     connect(clock, SIGNAL(pauseClicked()), SLOT(actionPause()));
@@ -37,7 +37,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 }
 
 MainWindow::~MainWindow() {
-    delete ui;
     delete systemTrayIcon;
     delete menu;
     delete settingsWindow;
@@ -50,13 +49,22 @@ void MainWindow::initDefaultMenu() {
 }
 
 void MainWindow::initActions() {
-    connect(ui->actionAdvanced_Settings, SIGNAL(triggered()), menu->getAction(ActionMenu::Action::SETTINGS),
-            SLOT(trigger()));
     connect(menu->getAction(ActionMenu::Action::SETTINGS), SIGNAL(triggered()), settingsWindow, SLOT(show()));
     connect(menu->getAction(ActionMenu::Action::START), SIGNAL(triggered()), SLOT(actionStart()));
     connect(menu->getAction(ActionMenu::Action::PAUSE), SIGNAL(triggered()), SLOT(actionPause()));
     connect(menu->getAction(ActionMenu::Action::STOP), SIGNAL(triggered()), SLOT(actionStop()));
 
+}
+
+void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
+
+    if (reason == QSystemTrayIcon::Trigger) {
+        if (!clock->isVisible()) {
+            clock->show();
+        } else {
+            clock->hide();
+        }
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {

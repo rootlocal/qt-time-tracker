@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QSettings>
 
+QT_USE_NAMESPACE
+
 SettingsWindow::SettingsWindow(QWidget *parent, Settings *mSettings) : QDialog(parent),
                                                                        ui(new Ui::SettingsWindow) {
     settings = mSettings;

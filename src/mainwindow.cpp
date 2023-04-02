@@ -50,7 +50,8 @@ void MainWindow::initDefaultMenu() {
 }
 
 void MainWindow::initActions() {
-    connect(ui->actionAdvanced_Settings, SIGNAL(triggered()), menu->getAction(ActionMenu::Action::SETTINGS), SLOT(trigger()));
+    connect(ui->actionAdvanced_Settings, SIGNAL(triggered()), menu->getAction(ActionMenu::Action::SETTINGS),
+            SLOT(trigger()));
     connect(menu->getAction(ActionMenu::Action::SETTINGS), SIGNAL(triggered()), settingsWindow, SLOT(show()));
     connect(menu->getAction(ActionMenu::Action::START), SIGNAL(triggered()), SLOT(actionStart()));
     connect(menu->getAction(ActionMenu::Action::PAUSE), SIGNAL(triggered()), SLOT(actionPause()));
@@ -66,13 +67,15 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 void MainWindow::timerEvent(QTimerEvent *) {
     if (state == WORK) {
         seconds++;
-        auto h = (quint64) floor(seconds / 3600);
-        auto m = (quint64) floor((seconds % 3600) / 60);
-        auto s = (quint64) floor(seconds % 60);
+
+        clockStruct.hours = (quint64) floor(seconds / 3600);
+        clockStruct.minutes = (quint64) floor((seconds % 3600) / 60);
+        clockStruct.seconds = (quint64) floor(seconds % 60);
+
         auto clockText = QString("%1:%2:%3")
-                .arg(h, 3, 10, QChar('0'))
-                .arg(m, 2, 10, QChar('0'))
-                .arg(s, 2, 10, QChar('0'));
+                .arg(clockStruct.hours, 3, 10, QChar('0'))
+                .arg(clockStruct.minutes, 2, 10, QChar('0'))
+                .arg(clockStruct.seconds, 2, 10, QChar('0'));
 
         emit clock->setText(clockText);
     }

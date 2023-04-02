@@ -17,42 +17,62 @@ void Settings::load() {
     timerColors.pause = qSettings.value("timer/color_pause", timerColors.pause).value<QColor>();
     timerColors.stop = qSettings.value("timer/color_stop", timerColors.stop).value<QColor>();
 
-    timerWindowsSize = qSettings.value("timer/windows_size", timerWindowsSize).value<QSize>();
-    timerWindowsPosition = qSettings.value("timer/windows_position", timerWindowsPosition).value<QPoint>();
-    settingsGeometry = qSettings.value("settings/windows_geometry", settingsGeometry).value<QByteArray>();
+    timerWindowCustomSize = qSettings.value("timer/window_custom_size", timerWindowCustomSize).value<QSize>();
+    timerWindowSize = qSettings.value("timer/window_size", timerWindowSize).toString();
+    timerWindowPosition = qSettings.value("timer/window_position", timerWindowPosition).value<QPoint>();
+    isTimerCustomSize = qSettings.value("timer/is_window_custom_size", isTimerCustomSize).toBool();
+    settingsGeometry = qSettings.value("settings/window_geometry", settingsGeometry).value<QByteArray>();
 }
 
 void Settings::write() {
     qSettings.setValue("timer/color_work", timerColors.work);
     qSettings.setValue("timer/color_pause", timerColors.pause);
     qSettings.setValue("timer/color_stop", timerColors.stop);
-    qSettings.setValue("timer/windows_size", timerWindowsSize);
+    qSettings.setValue("timer/window_size", timerWindowSize);
+    qSettings.setValue("timer/window_custom_size", timerWindowCustomSize);
+    qSettings.setValue("timer/is_window_custom_size", isTimerCustomSize);
 }
 
-const QSize &Settings::getTimerWindowsSize() const {
-    return timerWindowsSize;
+const QSize &Settings::getTimerWindowCustomSize() const {
+    return timerWindowCustomSize;
 }
 
-void Settings::setTimerWindowsSize(const QSize &size) {
-    Settings::timerWindowsSize = size;
+void Settings::setTimerWindowCustomSize(const QSize &size) {
+    Settings::timerWindowCustomSize = size;
 }
 
-const QPoint &Settings::getTimerWindowsPosition() const {
-    return timerWindowsPosition;
+const QString &Settings::getTimerWindowSize() const {
+    return timerWindowSize;
 }
 
-void Settings::setTimerWindowsPosition(const QPoint &position) {
-    Settings::timerWindowsPosition = position;
-    qSettings.setValue("timer/windows_position", position);
+void Settings::setTimerWindowSize(const QString &size) {
+    Settings::timerWindowSize = size;
 }
 
-const QByteArray &Settings::getSettingsGeometry() const {
+const QPoint &Settings::getTimerWindowPosition() const {
+    return timerWindowPosition;
+}
+
+void Settings::setTimerWindowPosition(const QPoint &position) {
+    Settings::timerWindowPosition = position;
+    qSettings.setValue("timer/window_position", position);
+}
+
+const bool &Settings::getIsTimerCustomSize() const {
+    return isTimerCustomSize;
+}
+
+void Settings::setIsTimerCustomSize(const bool &value) {
+    isTimerCustomSize = value;
+}
+
+const QByteArray &Settings::getSettingGeometry() const {
     return settingsGeometry;
 }
 
-void Settings::setSettingsGeometry(const QByteArray &geometry) {
+void Settings::setSettingGeometry(const QByteArray &geometry) {
     Settings::settingsGeometry = geometry;
-    qSettings.setValue("settings/windows_geometry", geometry);
+    qSettings.setValue("settings/window_geometry", geometry);
 }
 
 // COLORS
@@ -67,3 +87,40 @@ void Settings::setTimerColors(Settings::timerColorsStruct &colors) {
 const Settings::timerColorsStruct &Settings::getTimerColorsDefault() const {
     return timerColorsDefault;
 }
+
+QList<QString> Settings::getTimerWindowSizesItems() {
+
+    if (timerWindowSizesItems.isEmpty()) {
+        timerWindowSizesItems.append("Small");
+        timerWindowSizesItems.append("Normal");
+        timerWindowSizesItems.append("Big");
+    }
+
+    return timerWindowSizesItems;
+}
+
+QString Settings::getTimerWindowSizesItem(int index) {
+    return getTimerWindowSizesItems().value(index);
+}
+
+QMap<QString, QSize> Settings::getTimerWindowSizes() {
+
+    if (timerWindowSizes.isEmpty()) {
+        timerWindowSizes.insert("Small", QSize(100, 24));
+        timerWindowSizes.insert("Normal", QSize(124, 28));
+        timerWindowSizes.insert("Big", QSize(134, 34));
+    }
+
+    return timerWindowSizes;
+}
+
+QSize Settings::getTimerWindowSize(const QString &name) {
+
+    if (getTimerWindowSizes().contains(name)) {
+        return getTimerWindowSizes().value(name);
+    }
+
+    return {124, 28};
+}
+
+

@@ -18,6 +18,13 @@ namespace Ui {
 class MainWindow : public QMainWindow {
 Q_OBJECT
 public:
+
+    struct timerClockStruct {
+        quint64 hours = 0;
+        quint64 minutes = 0;
+        quint64 seconds = 0;
+    };
+
     explicit MainWindow(QWidget *parent = nullptr);
 
     ~MainWindow() override;
@@ -50,6 +57,7 @@ private:
     Settings *settings;
     ClockState state = WORK;
     ActionMenu *menu;
+    timerClockStruct clockStruct;
 };
 
 #endif // MAIN_WINDOW_H

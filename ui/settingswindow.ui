@@ -102,10 +102,10 @@
             <item row="0" column="1">
              <widget class="QSpinBox" name="boxWidth">
               <property name="minimum">
-               <number>64</number>
+               <number>20</number>
               </property>
               <property name="maximum">
-               <number>512</number>
+               <number>600</number>
               </property>
              </widget>
             </item>
@@ -131,10 +131,10 @@
             <item row="1" column="1">
              <widget class="QSpinBox" name="boxHeight">
               <property name="minimum">
-               <number>64</number>
+               <number>20</number>
               </property>
               <property name="maximum">
-               <number>512</number>
+               <number>600</number>
               </property>
              </widget>
             </item>
@@ -170,24 +170,27 @@
             <item row="0" column="1">
              <widget class="QComboBox" name="comboBox">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="frame">
+               <bool>true</bool>
+              </property>
               <item>
                <property name="text">
-                <string>Small</string>
+                <string>Новый элемент 1</string>
                </property>
               </item>
               <item>
                <property name="text">
-                <string>Normal</string>
+                <string>Новый элемент 2</string>
                </property>
               </item>
               <item>
                <property name="text">
-                <string>Big</string>
+                <string>Новый элемент 3</string>
                </property>
               </item>
              </widget>

@@ -3,14 +3,18 @@
 #include <QColorDialog>
 #include <QDebug>
 #include <QSettings>
-#include <QMessageBox>
 
 SettingsWindow::SettingsWindow(QWidget *parent, Settings *mSettings) : QDialog(parent),
                                                                        ui(new Ui::SettingsWindow) {
     settings = mSettings;
-    timerSize = settings->getTimerWindowsSize();
-    timerColors = settings->getTimerColors();
+
     ui->setupUi(this);
+
+    timerSize = settings->getTimerWindowSize();
+    timerColors = settings->getTimerColors();
+    ui->groupBoxCustomSize->setChecked(settings->getIsTimerCustomSize());
+    ui->boxWidth->setValue(settings->getTimerWindowCustomSize().width());
+    ui->boxHeight->setValue(settings->getTimerWindowCustomSize().height());
 
     {
         QPalette pal = ui->btnClockWorkColor->palette();
@@ -33,39 +37,37 @@ SettingsWindow::SettingsWindow(QWidget *parent, Settings *mSettings) : QDialog(p
         ui->btnClockStopColor->setPalette(pal);
         ui->btnClockStopColor->update();
     }
+
+    ui->comboBox->clear();
+    QList<QString> windowsSizesItems = settings->getTimerWindowSizesItems();
+    ui->groupBoxSize->setDisabled(settings->getIsTimerCustomSize());
+    ui->comboBox->addItems(windowsSizesItems);
+    // ui->comboBox->setCurrentIndex(windowsSizesItems.indexOf(timerSize));
+
+    int index = ui->comboBox->findText(timerSize);
+
+    if (index != -1) {
+        ui->comboBox->setCurrentIndex(index);
+    }
+
+    connect(ui->groupBoxCustomSize,
+            SIGNAL(toggled(bool)), this,
+            SLOT(isCustomSizeGroupBoxActionClicked(bool))
+    );
+
 }
 
 SettingsWindow::~SettingsWindow() {
     delete ui;
 }
 
-void SettingsWindow::on_comboBox_currentIndexChanged(int index) {
-
-    switch (index) {
-        case 0:
-            timerSize.setWidth(100);
-            timerSize.setHeight(24);
-            break;
-        case 2:
-            timerSize.setWidth(134);
-            timerSize.setHeight(34);
-            break;
-        case 1:
-        default:
-            timerSize.setWidth(124);
-            timerSize.setHeight(28);
-            break;
-    }
-
-    emit signalSizeChanged(timerSize);
+void SettingsWindow::isCustomSizeGroupBoxActionClicked(bool state) {
+    ui->groupBoxSize->setDisabled(state);
 }
 
-void SettingsWindow::slotSizeChanged() {
-    int width = ui->boxWidth->value();
-    int height = ui->boxHeight->value();
-
-    timerSize = QSize(width, height);
-    emit signalSizeChanged(timerSize);
+void SettingsWindow::on_comboBox_currentIndexChanged(int index) {
+    QString newTimerSize = settings->getTimerWindowSizesItem(index);
+    emit signalSizeChanged(settings->getTimerWindowSize(newTimerSize));
 }
 
 void SettingsWindow::on_btnClockWorkColor_clicked() {
@@ -127,8 +129,22 @@ void SettingsWindow::colorChange(ClockState state, const QColor &color) {
 }
 
 void SettingsWindow::accept() {
-    settings->setTimerWindowsSize(timerSize);
+    bool isCustomSize = ui->groupBoxCustomSize->isChecked();
+    settings->setIsTimerCustomSize(isCustomSize);
     settings->setTimerColors(timerColors);
+
+    if (isCustomSize) {
+        int width = ui->boxWidth->value();
+        int height = ui->boxHeight->value();
+        QSize size = QSize(width, height);
+        settings->setTimerWindowCustomSize(size);
+        emit signalSizeChanged(size);
+    } else {
+        QString sizeStr = ui->comboBox->currentText();
+        settings->setTimerWindowSize(sizeStr);
+        emit signalSizeChanged(settings->getTimerWindowSize(sizeStr));
+    }
+
     settings->write();
 
     emit settingsWindowAccept();
@@ -141,13 +157,13 @@ void SettingsWindow::reject() {
 }
 
 void SettingsWindow::hide() {
-    settings->setSettingsGeometry(saveGeometry());
+    settings->setSettingGeometry(saveGeometry());
     QDialog::hide();
 }
 
 void SettingsWindow::show() {
-    if (!settings->getSettingsGeometry().isEmpty()) {
-        restoreGeometry(settings->getSettingsGeometry());
+    if (!settings->getSettingGeometry().isEmpty()) {
+        restoreGeometry(settings->getSettingGeometry());
     }
 
     QDialog::show();

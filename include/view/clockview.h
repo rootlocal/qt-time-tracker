@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "ActionMenu.h"
+#include "Settings.h"
 
 namespace Ui {
     class ClockView;
@@ -19,7 +20,7 @@ Q_OBJECT
 
 public:
 
-    explicit ClockView(QWidget *parent = nullptr, ActionMenu *actionMenu = nullptr);
+    explicit ClockView(QWidget *parent = nullptr, ActionMenu *actionMenu = nullptr, Settings *mSettings = nullptr);
 
     ~ClockView() override;
 
@@ -50,7 +51,7 @@ protected:
 
     void mouseDoubleClickEvent(QMouseEvent *event) override;
 
-    void keyPressEvent(QKeyEvent *e) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 private:
     Ui::ClockView *ui;
@@ -61,6 +62,7 @@ private:
     QColor colorPause;
     QColor colorBreak;
     QMenu *menu;
+    Settings *settings;
 };
 
 #endif // CLOCK_VIEW_H

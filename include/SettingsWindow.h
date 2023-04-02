@@ -2,9 +2,9 @@
 #define ADVANCED_SETTINGS_H
 
 #include <QDialog>
+#include <QSettings>
 #include "view/clockview.h"
-
-class QSettings;
+#include "Settings.h"
 
 namespace Ui {
     class SettingsWindow;
@@ -14,7 +14,7 @@ class SettingsWindow : public QDialog {
 Q_OBJECT
 
 public:
-    explicit SettingsWindow(QWidget *parent = nullptr);
+    explicit SettingsWindow(QWidget *parent = nullptr, Settings *mSettings = nullptr);
 
     ~SettingsWindow() override;
 
@@ -28,7 +28,19 @@ signals:
 
     void signalColorChange(ClockState, QColor);
 
+signals:
+
+    void mainWindowShow();
+
+    void settingsWindowAccept();
+
+    void settingsWindowReject();
+
 private slots:
+
+    void accept() override;
+
+    void reject() override;
 
     void on_comboBox_currentIndexChanged(int index);
 
@@ -42,7 +54,13 @@ private slots:
 
 private:
     Ui::SettingsWindow *ui;
-    QSettings *settings;
+    Settings *settings;
+
+    int width = 124;
+    int height = 28;
+    QColor colorWork;
+    QColor colorPause;
+    QColor colorStop;
 };
 
 #endif // ADVANCED_SETTINGS_H

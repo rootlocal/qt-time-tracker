@@ -1,5 +1,6 @@
 #include <QSettings>
 #include <QColor>
+#include <QDebug>
 #include "Settings.h"
 
 QT_USE_NAMESPACE
@@ -93,9 +94,11 @@ const Settings::timerColorsStruct &Settings::getTimerColorsDefault() const {
 QList<QString> Settings::getTimerWindowSizesItems() {
 
     if (timerWindowSizesItems.isEmpty()) {
-        timerWindowSizesItems.append("Small");
-        timerWindowSizesItems.append("Normal");
-        timerWindowSizesItems.append("Big");
+        QMap<QString, QSize> sizesMap = getTimerWindowSizes();
+                foreach (QString key, sizesMap.keys()) {
+                //QSize size = sizesMap.value(key);
+                timerWindowSizesItems.append(key);
+            }
     }
 
     return timerWindowSizesItems;

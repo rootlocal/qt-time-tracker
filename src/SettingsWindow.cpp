@@ -9,10 +9,7 @@ QT_USE_NAMESPACE
 SettingsWindow::SettingsWindow(QWidget *parent, Settings *mSettings) : QDialog(parent),
                                                                        ui(new Ui::SettingsWindow) {
     settings = mSettings;
-
     ui->setupUi(this);
-    setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint); //  On top window (fix unix)
-
     timerSize = settings->getTimerWindowSize();
     timerColors = settings->getTimerColors();
     ui->groupBoxCustomSize->setChecked(settings->getIsTimerCustomSize());
@@ -53,9 +50,8 @@ SettingsWindow::SettingsWindow(QWidget *parent, Settings *mSettings) : QDialog(p
         ui->comboBox->setCurrentIndex(index);
     }
 
-    connect(ui->groupBoxCustomSize,
-            SIGNAL(toggled(bool)), this,
-            SLOT(isCustomSizeGroupBoxActionClicked(bool))
+    connect(ui->groupBoxCustomSize, SIGNAL(toggled(bool)),
+            this, SLOT(isCustomSizeGroupBoxActionClicked(bool))
     );
 
 }
@@ -77,49 +73,49 @@ void SettingsWindow::on_btnClockWorkColor_clicked() {
     const QColor color = QColorDialog::getColor(timerColors.work);
     if (!color.isValid()) return;
     timerColors.work = color;
-    colorChange(WORK, color);
+    colorChange(ClockView::clockStateEnum::WORK, color);
 }
 
 void SettingsWindow::on_btnClockPauseColor_clicked() {
     const QColor color = QColorDialog::getColor(timerColors.pause);
     if (!color.isValid()) return;
     timerColors.pause = color;
-    colorChange(PAUSE, color);
+    colorChange(ClockView::clockStateEnum::PAUSE, color);
 }
 
 void SettingsWindow::on_btnClockStopColor_clicked() {
     const QColor color = QColorDialog::getColor(timerColors.stop);
     if (!color.isValid()) return;
     timerColors.stop = color;
-    colorChange(STOP, color);
+    colorChange(ClockView::clockStateEnum::STOP, color);
 }
 
 void SettingsWindow::on_btnResetColor_clicked() {
     timerColors = settings->getTimerColorsDefault();
-    colorChange(WORK, timerColors.work);
-    colorChange(PAUSE, timerColors.pause);
-    colorChange(STOP, timerColors.stop);
+    colorChange(ClockView::clockStateEnum::WORK, timerColors.work);
+    colorChange(ClockView::clockStateEnum::PAUSE, timerColors.pause);
+    colorChange(ClockView::clockStateEnum::STOP, timerColors.stop);
 }
 
-void SettingsWindow::colorChange(ClockState state, const QColor &color) {
+void SettingsWindow::colorChange(ClockView::clockStateEnum state, const QColor &color) {
     QPalette palette;
 
     switch (state) {
-        case WORK:
+        case ClockView::clockStateEnum::WORK:
             palette = ui->btnClockWorkColor->palette();
             palette.setColor(QPalette::Button, color);
             ui->btnClockWorkColor->setAutoFillBackground(true);
             ui->btnClockWorkColor->setPalette(palette);
             ui->btnClockWorkColor->update();
             break;
-        case PAUSE:
+        case ClockView::clockStateEnum::PAUSE:
             palette = ui->btnClockPauseColor->palette();
             palette.setColor(QPalette::Button, color);
             ui->btnClockPauseColor->setAutoFillBackground(true);
             ui->btnClockPauseColor->setPalette(palette);
             ui->btnClockPauseColor->update();
             break;
-        case STOP:
+        case ClockView::clockStateEnum::STOP:
             palette = ui->btnClockStopColor->palette();
             palette.setColor(QPalette::Button, color);
             ui->btnClockStopColor->setAutoFillBackground(true);

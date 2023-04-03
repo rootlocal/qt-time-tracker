@@ -2,7 +2,7 @@
 #include <QCloseEvent>
 #include <cmath>
 #include <QGuiApplication>
-#include "global.h"
+#include "icons.h"
 #include "mainwindow.h"
 #include "view/clockview.h"
 #include "SettingsWindow.h"
@@ -14,21 +14,21 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     timer->setInterval(1000);
     settings = new Settings(this);
     menu = new ActionMenu(this);
-    systemTrayIcon = new QSystemTrayIcon(Default::App::icon(), this);
+    systemTrayIcon = new QSystemTrayIcon(QIcon(TRAY_ICON), this);
     clock = new ClockView(this, menu, settings);
     settingsWindow = new SettingsWindow(this, settings);
+    state = workStateEnum::STOPPED;
 
     initActions();
     initDefaultMenu();
 
-    connect(settingsWindow, SIGNAL(signalSizeChanged(QSize)), clock, SLOT(setSize(QSize)));
-    connect(settingsWindow, SIGNAL(signalColorChange(ClockState, QColor)), clock, SLOT(setColor(ClockState, QColor)));
-    connect(systemTrayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this,
-            SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));
+    connect(settingsWindow, &SettingsWindow::signalSizeChanged, clock, &ClockView::setSize);
+    connect(settingsWindow, &SettingsWindow::signalColorChange, clock, &ClockView::setColor);
+    connect(systemTrayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
+    connect(clock, &ClockView::startClicked, this, &MainWindow::actionStart);
+    connect(clock, &ClockView::pauseClicked, this, &MainWindow::actionPause);
+    connect(timer, &QTimer::timeout, this, &MainWindow::slotUpdateTimerDisplay);
 
-    connect(clock, SIGNAL(startClicked()), SLOT(actionStart()));
-    connect(clock, SIGNAL(pauseClicked()), SLOT(actionPause()));
-    connect(timer, SIGNAL(timeout()), this, SLOT(slotUpdateTimerDisplay()));
     actionStart();
 }
 
@@ -36,6 +36,7 @@ MainWindow::~MainWindow() {
     delete systemTrayIcon;
     delete menu;
     delete settingsWindow;
+    delete timer;
 }
 
 void MainWindow::initDefaultMenu() {
@@ -49,7 +50,6 @@ void MainWindow::initActions() {
     connect(menu->getAction(ActionMenu::Action::START), SIGNAL(triggered()), SLOT(actionStart()));
     connect(menu->getAction(ActionMenu::Action::PAUSE), SIGNAL(triggered()), SLOT(actionPause()));
     connect(menu->getAction(ActionMenu::Action::STOP), SIGNAL(triggered()), SLOT(actionStop()));
-
 }
 
 void MainWindow::show() {
@@ -81,12 +81,12 @@ void MainWindow::timerEvent(QTimerEvent *event) {
 }
 
 void MainWindow::slotUpdateTimerDisplay() {
-    if (state == WORK) {
+    if (state == workStateEnum::RUNNING) {
         seconds++;
 
-        clockStruct.hours = (quint64) floor(seconds / 3600);
-        clockStruct.minutes = (quint64) floor((seconds % 3600) / 60);
-        clockStruct.seconds = (quint64) floor(seconds % 60);
+        clockStruct.hours = static_cast<quint64>(floor(seconds / 3600));
+        clockStruct.minutes = static_cast<quint64>(floor((seconds % 3600) / 60));
+        clockStruct.seconds = static_cast<quint64>(floor(seconds % 60));
 
         auto clockText = QString("%1:%2:%3")
                 .arg(clockStruct.hours, 3, 10, QChar('0'))
@@ -98,43 +98,46 @@ void MainWindow::slotUpdateTimerDisplay() {
 }
 
 void MainWindow::actionStart() {
-    if (state != WORK) {
+    if (state != workStateEnum::RUNNING) {
         timer->start();
-        setState(WORK);
+        setState(workStateEnum::RUNNING);
     }
 }
 
 void MainWindow::actionPause() {
     timer->stop();
-    setState(PAUSE);
+    setState(workStateEnum::PAUSED);
 }
 
 void MainWindow::actionStop() {
     timer->stop();
     seconds = 0;
     clock->setText("000:00:00");
-    setState(STOP);
+    setState(workStateEnum::STOPPED);
 }
 
-void MainWindow::setState(ClockState clockState) {
-    clock->setState(clockState);
+void MainWindow::setState(workStateEnum clockState) {
+    clock->setState(ClockView::clockStateEnum::WORK);
     this->state = clockState;
 
     switch (clockState) {
-        case WORK:
+        case workStateEnum::RUNNING:
             menu->getAction(ActionMenu::Action::START)->setVisible(false);
             menu->getAction(ActionMenu::Action::PAUSE)->setVisible(true);
             menu->getAction(ActionMenu::Action::STOP)->setVisible(true);
+            clock->setState(ClockView::clockStateEnum::WORK);
             break;
-        case PAUSE:
+        case workStateEnum::PAUSED:
             menu->getAction(ActionMenu::Action::START)->setVisible(true);
             menu->getAction(ActionMenu::Action::PAUSE)->setVisible(false);
             menu->getAction(ActionMenu::Action::STOP)->setVisible(true);
+            clock->setState(ClockView::clockStateEnum::PAUSE);
             break;
         default:
             menu->getAction(ActionMenu::Action::START)->setVisible(true);
             menu->getAction(ActionMenu::Action::PAUSE)->setVisible(false);
             menu->getAction(ActionMenu::Action::STOP)->setVisible(false);
+            clock->setState(ClockView::clockStateEnum::STOP);
             break;
     }
 

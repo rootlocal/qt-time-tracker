@@ -26,7 +26,7 @@ signals:
 
     void signalSizeChanged(QSize);
 
-    void signalColorChange(ClockState, QColor);
+    void signalColorChange(ClockView::clockStateEnum, QColor);
 
     void settingsWindowAccept();
 
@@ -55,7 +55,7 @@ private slots:
     void isCustomSizeGroupBoxActionClicked(bool state);
 
 private:
-    void colorChange(ClockState state, const QColor &color);
+    void colorChange(ClockView::clockStateEnum state, const QColor &color);
 
     Ui::SettingsWindow *ui;
     Settings *settings;

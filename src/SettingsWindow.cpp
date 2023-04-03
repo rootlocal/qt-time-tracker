@@ -1,5 +1,5 @@
 #include "SettingsWindow.h"
-#include "ui_settingswindow.h"
+#include "ui_settings_window.h"
 #include <QColorDialog>
 #include <QDebug>
 #include <QSettings>
@@ -10,6 +10,7 @@ SettingsWindow::SettingsWindow(QWidget *parent, Settings *mSettings) : QDialog(p
                                                                        ui(new Ui::SettingsWindow) {
     settings = mSettings;
     ui->setupUi(this);
+    setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint);
     timerSize = settings->getTimerWindowSize();
     timerColors = settings->getTimerColors();
     ui->groupBoxCustomSize->setChecked(settings->getIsTimerCustomSize());
@@ -50,47 +51,51 @@ SettingsWindow::SettingsWindow(QWidget *parent, Settings *mSettings) : QDialog(p
         ui->comboBox->setCurrentIndex(index);
     }
 
-    connect(ui->groupBoxCustomSize, SIGNAL(toggled(bool)),
-            this, SLOT(isCustomSizeGroupBoxActionClicked(bool))
-    );
-
+    connect(ui->groupBoxCustomSize, &QGroupBox::toggled, this, &SettingsWindow::isCustomSizeClicked);
+    //connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &SettingsWindow::accept);
+    //connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &SettingsWindow::reject);
+    connect(ui->btnClockWorkColor, &QPushButton::clicked, this, &SettingsWindow::btnWorkColorClicked);
+    connect(ui->btnClockPauseColor, &QPushButton::clicked, this, &SettingsWindow::btnPauseColorClicked);
+    connect(ui->btnClockStopColor, &QPushButton::clicked, this, &SettingsWindow::btnStopColorClicked);
+    connect(ui->btnResetColor, &QPushButton::clicked, this, &SettingsWindow::btnResetColorClicked);
+    connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(comboBoxChanged(int)));
 }
 
 SettingsWindow::~SettingsWindow() {
     delete ui;
 }
 
-void SettingsWindow::isCustomSizeGroupBoxActionClicked(bool state) {
+void SettingsWindow::isCustomSizeClicked(bool state) {
     ui->groupBoxSize->setDisabled(state);
 }
 
-void SettingsWindow::on_comboBox_currentIndexChanged(int index) {
+void SettingsWindow::comboBoxChanged(int index) {
     QString newTimerSize = settings->getTimerWindowSizesItem(index);
     emit signalSizeChanged(settings->getTimerWindowSize(newTimerSize));
 }
 
-void SettingsWindow::on_btnClockWorkColor_clicked() {
-    const QColor color = QColorDialog::getColor(timerColors.work);
+void SettingsWindow::btnWorkColorClicked() {
+    const QColor color = QColorDialog::getColor(timerColors.work, this);
     if (!color.isValid()) return;
     timerColors.work = color;
     colorChange(ClockView::clockStateEnum::WORK, color);
 }
 
-void SettingsWindow::on_btnClockPauseColor_clicked() {
-    const QColor color = QColorDialog::getColor(timerColors.pause);
+void SettingsWindow::btnPauseColorClicked() {
+    const QColor color = QColorDialog::getColor(timerColors.pause, this);
     if (!color.isValid()) return;
     timerColors.pause = color;
     colorChange(ClockView::clockStateEnum::PAUSE, color);
 }
 
-void SettingsWindow::on_btnClockStopColor_clicked() {
-    const QColor color = QColorDialog::getColor(timerColors.stop);
+void SettingsWindow::btnStopColorClicked() {
+    const QColor color = QColorDialog::getColor(timerColors.stop, this);
     if (!color.isValid()) return;
     timerColors.stop = color;
     colorChange(ClockView::clockStateEnum::STOP, color);
 }
 
-void SettingsWindow::on_btnResetColor_clicked() {
+void SettingsWindow::btnResetColorClicked() {
     timerColors = settings->getTimerColorsDefault();
     colorChange(ClockView::clockStateEnum::WORK, timerColors.work);
     colorChange(ClockView::clockStateEnum::PAUSE, timerColors.pause);
@@ -156,13 +161,16 @@ void SettingsWindow::reject() {
 }
 
 void SettingsWindow::hide() {
-    settings->setSettingGeometry(saveGeometry());
     QDialog::hide();
 }
 
+void SettingsWindow::closeEvent(QCloseEvent *event) {
+    settings->setWindowGeometry("settings", saveGeometry());
+}
+
 void SettingsWindow::show() {
-    if (!settings->getSettingGeometry().isEmpty()) {
-        restoreGeometry(settings->getSettingGeometry());
+    if (!settings->getWindowGeometry("settings").isEmpty()) {
+        restoreGeometry(settings->getWindowGeometry("settings"));
     }
 
     QDialog::show();

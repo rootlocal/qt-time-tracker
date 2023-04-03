@@ -4,7 +4,6 @@
 #include <QWidget>
 #include "ActionMenu.h"
 #include "Settings.h"
-#include "ClockSettingsFacade.h"
 
 namespace Ui {
     class ClockView;
@@ -62,7 +61,6 @@ private:
     Settings::timerColorsStruct colors;
     QMenu *menu;
     Settings *settings;
-    ClockSettingsFacade *clockSettingsFacade;
 };
 
 #endif // CLOCK_VIEW_H

@@ -32,7 +32,7 @@ signals:
 
     void settingsWindowReject();
 
-private slots:
+public slots:
 
     void hide();
 
@@ -42,17 +42,22 @@ private slots:
 
     void reject() override;
 
-    void on_comboBox_currentIndexChanged(int index);
+private slots:
 
-    void on_btnClockWorkColor_clicked();
+    void comboBoxChanged(int index);
 
-    void on_btnClockPauseColor_clicked();
+    void btnWorkColorClicked();
 
-    void on_btnClockStopColor_clicked();
+    void btnPauseColorClicked();
 
-    void on_btnResetColor_clicked();
+    void btnStopColorClicked();
 
-    void isCustomSizeGroupBoxActionClicked(bool state);
+    void btnResetColorClicked();
+
+    void isCustomSizeClicked(bool state);
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 
 private:
     void colorChange(ClockView::clockStateEnum state, const QColor &color);

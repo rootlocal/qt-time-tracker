@@ -17,6 +17,7 @@ public:
         START,
         STOP,
         PAUSE,
+        TASKS,
     };
 
     explicit ActionMenu(QWidget *parent = nullptr);
@@ -35,6 +36,7 @@ private:
     QAction *actionStart;
     QAction *actionStop;
     QAction *actionPause;
+    QAction *actionTasks;
 };
 
 

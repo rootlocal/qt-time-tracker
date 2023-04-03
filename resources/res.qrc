@@ -1,8 +1,13 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="icon_tray">icons/icon.png</file>
-        <file alias="icon_arrow_down">icons/arrow_down.png</file>
-        <file alias="icon_arrow_up">icons/arrow_up.png</file>
+        <file alias="icon_tray">icons/stopwatch_64x64.png</file>
+        <file alias="icon_tray_16x16">icons/stopwatch_16x16.png</file>
+        <file alias="icon_tray_24x24">icons/stopwatch_24x24.png</file>
+        <file alias="icon_tray_32x32">icons/stopwatch_32x32.png</file>
+        <file alias="icon_tray_64x64">icons/stopwatch_64x64.png</file>
+        <file alias="icon_tray_128x128">icons/stopwatch_128x128.png</file>
+        <file alias="icon_tray_256x256">icons/stopwatch_256x256.png</file>
+        <file alias="icon_tray_512x512">icons/stopwatch_512x512.png</file>
     </qresource>
 
     <qresource prefix="/lang">

@@ -10,16 +10,16 @@ namespace Ui {
     class ClockView;
 }
 
-enum ClockState {
-    WORK,
-    PAUSE,
-    STOP
-};
-
 class ClockView : public QWidget {
 Q_OBJECT
 
 public:
+
+    enum struct clockStateEnum {
+        WORK,
+        PAUSE,
+        STOP
+    };
 
     explicit ClockView(QWidget *parent = nullptr, ActionMenu *actionMenu = nullptr, Settings *mSettings = nullptr);
 
@@ -37,9 +37,9 @@ public slots:
 
     void setSize(QSize size);
 
-    void setState(ClockState state);
+    void setState(clockStateEnum state);
 
-    void setColor(ClockState state, const QColor &color);
+    void setColor(ClockView::clockStateEnum state, QColor color);
 
     void showContextMenu(const QPoint &point);
 
@@ -58,7 +58,7 @@ private:
     Ui::ClockView *ui;
     QPoint oldMousePosition;
     bool isMouseDrag = false;
-    ClockState state = STOP;
+    clockStateEnum state;
     Settings::timerColorsStruct colors;
     QMenu *menu;
     Settings *settings;

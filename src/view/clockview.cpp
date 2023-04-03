@@ -5,7 +5,8 @@
 QT_USE_NAMESPACE
 
 ClockView::ClockView(QWidget *parent, ActionMenu *actionMenu, Settings *mSettings) : QWidget(parent),
-                                                                                     ui(new Ui::ClockView) {
+                                                                                     ui(new Ui::ClockView),
+                                                                                     state(clockStateEnum::STOP) {
     settings = mSettings;
     clockSettingsFacade = new ClockSettingsFacade(this, settings);
     menu = actionMenu->getMenu();
@@ -13,19 +14,18 @@ ClockView::ClockView(QWidget *parent, ActionMenu *actionMenu, Settings *mSetting
 
     ui->setupUi(this);
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    setContextMenuPolicy(Qt::CustomContextMenu);
     setSize(clockSettingsFacade->getWindowsSize());
 
     QPoint savedPosition = settings->getTimerWindowPosition();
+
     if (!savedPosition.isNull()) {
         this->move(savedPosition.x(), savedPosition.y());
     }
 
     ui->lcdDisplay->display("000:00:00");
-
-    setState(STOP);
-
-    setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showContextMenu(QPoint)));
+    setState(clockStateEnum::STOP);
 }
 
 ClockView::~ClockView() {
@@ -40,23 +40,23 @@ void ClockView::setSize(QSize size) {
     this->resize(size);
 }
 
-void ClockView::setState(ClockState clockState) {
+void ClockView::setState(clockStateEnum clockState) {
     state = clockState;
 
     switch (state) {
-        case WORK:
+        case clockStateEnum::WORK:
             ui->lcdDisplay->setStyleSheet(tr("background-color: rgb(%1, %2, %3);")
                                                   .arg(colors.work.red())
                                                   .arg(colors.work.green())
                                                   .arg(colors.work.blue()));
             break;
-        case PAUSE:
+        case clockStateEnum::PAUSE:
             ui->lcdDisplay->setStyleSheet(tr("background-color: rgb(%1, %2, %3);")
                                                   .arg(colors.pause.red())
                                                   .arg(colors.pause.green())
                                                   .arg(colors.pause.blue()));
             break;
-        case STOP:
+        case clockStateEnum::STOP:
         default:
             ui->lcdDisplay->setStyleSheet(tr("background-color: rgb(%1, %2, %3);")
                                                   .arg(colors.stop.red())
@@ -66,15 +66,15 @@ void ClockView::setState(ClockState clockState) {
     }
 }
 
-void ClockView::setColor(ClockState clockState, const QColor &color) {
+void ClockView::setColor(ClockView::clockStateEnum clockState, QColor color) {
     switch (clockState) {
-        case WORK:
+        case clockStateEnum::WORK:
             colors.work = color;
             break;
-        case PAUSE:
+        case clockStateEnum::PAUSE:
             colors.pause = color;
             break;
-        case STOP:
+        case clockStateEnum::STOP:
             colors.stop = color;
             break;
         default:
@@ -120,9 +120,9 @@ void ClockView::mouseReleaseEvent(QMouseEvent *event) {
 
 void ClockView::mouseDoubleClickEvent(QMouseEvent *event) {
 
-    if (state == WORK) {
+    if (state == clockStateEnum::WORK) {
         emit pauseClicked();
-    } else if (state == PAUSE) {
+    } else if (state == clockStateEnum::PAUSE) {
         emit startClicked();
     }
 }
@@ -130,9 +130,9 @@ void ClockView::mouseDoubleClickEvent(QMouseEvent *event) {
 void ClockView::keyPressEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_Space) {
 
-        if (state == WORK) {
+        if (state == clockStateEnum::WORK) {
             emit pauseClicked();
-        } else if (state == PAUSE) {
+        } else if (state == clockStateEnum::PAUSE) {
             emit startClicked();
         }
 

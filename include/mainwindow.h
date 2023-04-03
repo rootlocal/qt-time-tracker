@@ -18,6 +18,12 @@ class MainWindow : public QWidget {
 Q_OBJECT
 public:
 
+    enum struct workStateEnum {
+        RUNNING,
+        PAUSED,
+        STOPPED,
+    };
+
     struct timerClockStruct {
         quint64 hours = 0;
         quint64 minutes = 0;
@@ -46,7 +52,7 @@ private slots:
 
     void actionStop();
 
-    void setState(ClockState clockState);
+    void setState(workStateEnum workState);
 
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
 
@@ -62,7 +68,7 @@ private:
     ClockView *clock;
     SettingsWindow *settingsWindow;
     Settings *settings;
-    ClockState state = STOP;
+    workStateEnum state;
     ActionMenu *menu;
     timerClockStruct clockStruct;
     QTimer *timer;

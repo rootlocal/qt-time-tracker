@@ -11,6 +11,7 @@ SettingsWindow::SettingsWindow(QWidget *parent, Settings *mSettings) : QDialog(p
     settings = mSettings;
 
     ui->setupUi(this);
+    setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint); //  On top window (fix unix)
 
     timerSize = settings->getTimerWindowSize();
     timerColors = settings->getTimerColors();

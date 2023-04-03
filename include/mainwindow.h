@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QSystemTrayIcon>
+#include <QTimer>
 #include "view/clockview.h"
 #include "ActionMenu.h"
 #include "SettingsWindow.h"
@@ -32,6 +33,11 @@ protected:
 
     void timerEvent(QTimerEvent *) override;
 
+public slots:
+    void show();
+
+    void hide();
+
 private slots:
 
     void actionStart();
@@ -44,6 +50,8 @@ private slots:
 
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
 
+    void slotUpdateTimerDisplay();
+
 private:
     void initDefaultMenu();
 
@@ -54,9 +62,10 @@ private:
     ClockView *clock;
     SettingsWindow *settingsWindow;
     Settings *settings;
-    ClockState state = WORK;
+    ClockState state = STOP;
     ActionMenu *menu;
     timerClockStruct clockStruct;
+    QTimer *timer;
 };
 
 #endif // MAIN_WINDOW_H

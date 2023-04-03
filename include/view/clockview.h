@@ -58,7 +58,7 @@ private:
     Ui::ClockView *ui;
     QPoint oldMousePosition;
     bool isMouseDrag = false;
-    ClockState state = WORK;
+    ClockState state = STOP;
     Settings::timerColorsStruct colors;
     QMenu *menu;
     Settings *settings;

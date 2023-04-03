@@ -10,16 +10,16 @@
 QT_USE_NAMESPACE
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
+    timer = new QTimer(this);
+    timer->setInterval(1000);
     settings = new Settings(this);
     menu = new ActionMenu(this);
-
     systemTrayIcon = new QSystemTrayIcon(Default::App::icon(), this);
     clock = new ClockView(this, menu, settings);
     settingsWindow = new SettingsWindow(this, settings);
 
     initActions();
     initDefaultMenu();
-    setState(WORK);
 
     connect(settingsWindow, SIGNAL(signalSizeChanged(QSize)), clock, SLOT(setSize(QSize)));
     connect(settingsWindow, SIGNAL(signalColorChange(ClockState, QColor)), clock, SLOT(setColor(ClockState, QColor)));
@@ -28,12 +28,8 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 
     connect(clock, SIGNAL(startClicked()), SLOT(actionStart()));
     connect(clock, SIGNAL(pauseClicked()), SLOT(actionPause()));
-
-    clock->show();
-
-    this->setWindowIcon(Default::App::icon());
-    this->setWindowTitle(tr("Timer"));
-    startTimer(1000);
+    connect(timer, SIGNAL(timeout()), this, SLOT(slotUpdateTimerDisplay()));
+    actionStart();
 }
 
 MainWindow::~MainWindow() {
@@ -56,13 +52,21 @@ void MainWindow::initActions() {
 
 }
 
+void MainWindow::show() {
+    clock->show();
+}
+
+void MainWindow::hide() {
+    clock->hide();
+}
+
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
 
     if (reason == QSystemTrayIcon::Trigger) {
         if (!clock->isVisible()) {
-            clock->show();
+            this->show();
         } else {
-            clock->hide();
+            this->hide();
         }
     }
 }
@@ -72,7 +76,11 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     this->hide();
 }
 
-void MainWindow::timerEvent(QTimerEvent *) {
+void MainWindow::timerEvent(QTimerEvent *event) {
+
+}
+
+void MainWindow::slotUpdateTimerDisplay() {
     if (state == WORK) {
         seconds++;
 
@@ -85,28 +93,31 @@ void MainWindow::timerEvent(QTimerEvent *) {
                 .arg(clockStruct.minutes, 2, 10, QChar('0'))
                 .arg(clockStruct.seconds, 2, 10, QChar('0'));
 
-        emit clock->setText(clockText);
+        clock->setText(clockText);
     }
 }
 
 void MainWindow::actionStart() {
     if (state != WORK) {
-        emit setState(WORK);
+        timer->start();
+        setState(WORK);
     }
 }
 
 void MainWindow::actionPause() {
-    emit setState(PAUSE);
+    timer->stop();
+    setState(PAUSE);
 }
 
 void MainWindow::actionStop() {
+    timer->stop();
     seconds = 0;
-    emit clock->setText("000:00:00");
-    emit setState(STOP);
+    clock->setText("000:00:00");
+    setState(STOP);
 }
 
 void MainWindow::setState(ClockState clockState) {
-    emit clock->setState(clockState);
+    clock->setState(clockState);
     this->state = clockState;
 
     switch (clockState) {

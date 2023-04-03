@@ -11,12 +11,14 @@ ActionMenu::ActionMenu(QWidget *parent) : QWidget(parent) {
     actionStop = new QAction(tr("Stop"), this);
     actionSettings = new QAction(tr("Settings"), this);
     actionExit = new QAction(tr("Exit"), this);
+    actionTasks = new QAction(tr("Tasks"), this);
 
     timerActions.push_back(actionPause);
     timerActions.push_back(actionStart);
     timerActions.push_back(actionStop);
     menu->addActions(timerActions);
     menu->addSeparator();
+    appActions.push_back(actionTasks);
     appActions.push_back(actionSettings);
     appActions.push_back(actionExit);
     menu->addActions(appActions);
@@ -29,6 +31,7 @@ ActionMenu::~ActionMenu() {
     delete actionStart;
     delete actionStop;
     delete actionPause;
+    delete actionTasks;
 }
 
 QAction *ActionMenu::getAction(Action action) {
@@ -43,6 +46,8 @@ QAction *ActionMenu::getAction(Action action) {
             return actionStop;
         case Action::PAUSE:
             return actionPause;
+        case Action::TASKS:
+            return actionTasks;
         default:
             return nullptr;
     }

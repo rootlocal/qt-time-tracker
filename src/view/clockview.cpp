@@ -1,5 +1,5 @@
 #include "view/clockview.h"
-#include "ui_clockview.h"
+#include "ui_clock_view_widget.h"
 #include <QMouseEvent>
 
 QT_USE_NAMESPACE
@@ -8,23 +8,30 @@ ClockView::ClockView(QWidget *parent, ActionMenu *actionMenu, Settings *mSetting
                                                                                      ui(new Ui::ClockView),
                                                                                      state(clockStateEnum::STOP) {
     settings = mSettings;
-    clockSettingsFacade = new ClockSettingsFacade(this, settings);
     menu = actionMenu->getMenu();
     colors = settings->getTimerColors();
 
     ui->setupUi(this);
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     setContextMenuPolicy(Qt::CustomContextMenu);
-    setSize(clockSettingsFacade->getWindowsSize());
+
+    QSize windowsSize;
+    if (settings->getIsTimerCustomSize()) {
+        windowsSize = settings->getTimerWindowCustomSize();
+    } else {
+        QString sizeStr = settings->getTimerWindowSize();
+        windowsSize = settings->getTimerWindowSize(sizeStr);
+    }
+
+    setSize(windowsSize);
 
     QPoint savedPosition = settings->getTimerWindowPosition();
-
     if (!savedPosition.isNull()) {
         this->move(savedPosition.x(), savedPosition.y());
     }
 
     ui->lcdDisplay->display("000:00:00");
-    connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showContextMenu(QPoint)));
+    connect(this, &ClockView::customContextMenuRequested, this, &ClockView::showContextMenu);
     setState(clockStateEnum::STOP);
 }
 
@@ -98,7 +105,6 @@ void ClockView::mouseMoveEvent(QMouseEvent *event) {
         const QPoint p = this->pos() + (event->globalPos() - oldMousePosition);
         oldMousePosition = event->globalPos();
         move(p);
-        settings->setTimerWindowPosition(this->pos());
         event->accept();
     }
 }
@@ -115,6 +121,7 @@ void ClockView::mousePressEvent(QMouseEvent *event) {
 
 void ClockView::mouseReleaseEvent(QMouseEvent *event) {
     isMouseDrag = false;
+    settings->setTimerWindowPosition(this->pos());
     event->accept();
 }
 

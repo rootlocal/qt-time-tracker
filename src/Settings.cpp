@@ -1,15 +1,15 @@
 #include <QSettings>
 #include <QColor>
 #include <QDebug>
+#include <QStandardPaths>
+#include <QDir>
 #include "Settings.h"
 
 QT_USE_NAMESPACE
 
-Settings::Settings(QObject *parent) : QObject(parent),
-                                      qSettings(QSettings::IniFormat,
-                                                QSettings::UserScope,
-                                                SETTINGS_ORGANIZATION,
-                                                SETTINGS_APPLICATION_NAME, this) {
+Settings::Settings(QObject *parent) : QObject(parent), qSettings(
+        QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) + QDir::separator() + "config.ini",
+        QSettings::IniFormat) {
     load();
 }
 
@@ -24,7 +24,6 @@ void Settings::load() {
     timerWindowSize = qSettings.value("timer/window_size", timerWindowSize).toString();
     timerWindowPosition = qSettings.value("timer/window_position", timerWindowPosition).value<QPoint>();
     isTimerCustomSize = qSettings.value("timer/is_window_custom_size", isTimerCustomSize).toBool();
-    settingsGeometry = qSettings.value("settings/window_geometry", settingsGeometry).value<QByteArray>();
 }
 
 void Settings::write() {
@@ -69,13 +68,21 @@ void Settings::setIsTimerCustomSize(const bool &value) {
     isTimerCustomSize = value;
 }
 
-const QByteArray &Settings::getSettingGeometry() const {
-    return settingsGeometry;
+QByteArray Settings::getWindowGeometry(const QString &windowName) {
+
+    if (windowGeometry.empty() || !windowGeometry.contains(windowName)) {
+        QString keyVal = QString("%1/window_geometry").arg(windowName);
+        auto val = qSettings.value(keyVal).value<QByteArray>();
+        windowGeometry.insert(windowName, val);
+    }
+
+    return windowGeometry.value(windowName);
 }
 
-void Settings::setSettingGeometry(const QByteArray &geometry) {
-    Settings::settingsGeometry = geometry;
-    qSettings.setValue("settings/window_geometry", geometry);
+void Settings::setWindowGeometry(const QString &windowName, const QByteArray &geometry) {
+    windowGeometry.insert(windowName, geometry);
+    QString key = QString("%1/window_geometry").arg(windowName);
+    qSettings.setValue(key, geometry);
 }
 
 // COLORS

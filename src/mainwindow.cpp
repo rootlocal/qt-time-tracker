@@ -1,15 +1,17 @@
 #include <QSystemTrayIcon>
 #include <QCloseEvent>
-#include <cmath>
 #include <QGuiApplication>
 #include "icons.h"
 #include "mainwindow.h"
 #include "view/clockview.h"
 #include "SettingsWindow.h"
+#include "helpers/TimeDateHelper.h"
 
 QT_USE_NAMESPACE
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
+    db = new DataBase(this);
+    db->connectToDataBase();
     timer = new QTimer(this);
     timer->setInterval(1000);
     settings = new Settings(this);
@@ -18,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     clock = new ClockView(this, menu, settings);
     settingsWindow = new SettingsWindow(this, settings);
     state = workStateEnum::STOPPED;
-
+    tasksWindow = new TasksWindow(settings, this);
     initActions();
     initDefaultMenu();
 
@@ -29,14 +31,17 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     connect(clock, &ClockView::pauseClicked, this, &MainWindow::actionPause);
     connect(timer, &QTimer::timeout, this, &MainWindow::slotUpdateTimerDisplay);
 
-    actionStart();
+    setState(workStateEnum::STOPPED);
 }
 
 MainWindow::~MainWindow() {
+    db->closeDataBase();
     delete systemTrayIcon;
     delete menu;
     delete settingsWindow;
     delete timer;
+    delete tasksWindow;
+    delete db;
 }
 
 void MainWindow::initDefaultMenu() {
@@ -47,7 +52,8 @@ void MainWindow::initDefaultMenu() {
 
 void MainWindow::initActions() {
     connect(menu->getAction(ActionMenu::Action::SETTINGS), SIGNAL(triggered()), settingsWindow, SLOT(show()));
-    connect(menu->getAction(ActionMenu::Action::START), SIGNAL(triggered()), SLOT(actionStart()));
+    connect(menu->getAction(ActionMenu::Action::TASKS), SIGNAL(triggered()), tasksWindow, SLOT(show()));
+    connect(menu->getAction(ActionMenu::Action::START), SIGNAL(triggered()), SLOT(slotSelectTask()));
     connect(menu->getAction(ActionMenu::Action::PAUSE), SIGNAL(triggered()), SLOT(actionPause()));
     connect(menu->getAction(ActionMenu::Action::STOP), SIGNAL(triggered()), SLOT(actionStop()));
 }
@@ -83,18 +89,27 @@ void MainWindow::timerEvent(QTimerEvent *event) {
 void MainWindow::slotUpdateTimerDisplay() {
     if (state == workStateEnum::RUNNING) {
         seconds++;
-
-        clockStruct.hours = static_cast<quint64>(floor(seconds / 3600));
-        clockStruct.minutes = static_cast<quint64>(floor((seconds % 3600) / 60));
-        clockStruct.seconds = static_cast<quint64>(floor(seconds % 60));
-
-        auto clockText = QString("%1:%2:%3")
-                .arg(clockStruct.hours, 3, 10, QChar('0'))
-                .arg(clockStruct.minutes, 2, 10, QChar('0'))
-                .arg(clockStruct.seconds, 2, 10, QChar('0'));
-
-        clock->setText(clockText);
+        clock->setText(TimeDateHelper::formatTimeToString(seconds));
     }
+}
+
+void MainWindow::slotSelectTask() {
+    if (currentTask == 0) {
+        auto *taskListWindow = new TaskListWindow(settings, this);
+        QMetaObject::Connection con = connect(taskListWindow, &TaskListWindow::signalSelectedTask, this,
+                                              &MainWindow::slotSelectedTask);
+        tasksWindow->hide();
+        taskListWindow->exec();
+        disconnect(con);
+        delete taskListWindow;
+    } else {
+        actionStart();
+    }
+}
+
+void MainWindow::slotSelectedTask(quint64 taskId) {
+    currentTask = taskId;
+    actionStart();
 }
 
 void MainWindow::actionStart() {
@@ -111,7 +126,16 @@ void MainWindow::actionPause() {
 
 void MainWindow::actionStop() {
     timer->stop();
+
+    /** Сохраняем в базу что натикало в таймере */
+    QVariantList variantList;
+    variantList.append(currentTask);
+    variantList.append(seconds);
+    variantList.append("");
+    db->insertIntoTimeTable(variantList);
+
     seconds = 0;
+    currentTask = 0;
     clock->setText("000:00:00");
     setState(workStateEnum::STOPPED);
 }

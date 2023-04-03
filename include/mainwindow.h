@@ -8,6 +8,9 @@
 #include "ActionMenu.h"
 #include "SettingsWindow.h"
 #include "Settings.h"
+#include "TasksWindow.h"
+#include "TaskListWindow.h"
+#include "DataBase.h"
 
 class QSystemTrayIcon;
 
@@ -24,12 +27,6 @@ public:
         STOPPED,
     };
 
-    struct timerClockStruct {
-        quint64 hours = 0;
-        quint64 minutes = 0;
-        quint64 seconds = 0;
-    };
-
     explicit MainWindow(QWidget *parent = nullptr);
 
     ~MainWindow() override;
@@ -40,6 +37,7 @@ protected:
     void timerEvent(QTimerEvent *) override;
 
 public slots:
+
     void show();
 
     void hide();
@@ -47,6 +45,10 @@ public slots:
 private slots:
 
     void actionStart();
+
+    void slotSelectTask();
+
+    void slotSelectedTask(quint64 taskId);
 
     void actionPause();
 
@@ -70,8 +72,10 @@ private:
     Settings *settings;
     workStateEnum state;
     ActionMenu *menu;
-    timerClockStruct clockStruct;
     QTimer *timer;
+    TasksWindow *tasksWindow;
+    quint64 currentTask = 0;
+    DataBase *db;
 };
 
 #endif // MAIN_WINDOW_H

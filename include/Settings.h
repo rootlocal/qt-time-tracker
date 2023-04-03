@@ -7,14 +7,11 @@
 #include <QSize>
 #include <QColor>
 
-#define SETTINGS_ORGANIZATION "rootlocal"
-#define SETTINGS_APPLICATION_NAME "timer"
-
 class Settings : public QObject {
 Q_OBJECT
 
 public:
-    explicit Settings(QObject *parent = nullptr);
+    explicit Settings(QObject *parent);
 
     ~Settings() override;
 
@@ -44,9 +41,9 @@ public:
 
     void setIsTimerCustomSize(const bool &value);
 
-    const QByteArray &getSettingGeometry() const;
+    QByteArray getWindowGeometry(const QString &windowName);
 
-    void setSettingGeometry(const QByteArray &geometry);
+    void setWindowGeometry(const QString &windowName, const QByteArray &geometry);
 
     // COLORS
     const timerColorsStruct &getTimerColors() const;
@@ -68,7 +65,7 @@ private:
     QPoint timerWindowPosition = QPoint(0, 0);
     QSize timerWindowCustomSize = QSize(124, 28);
     QString timerWindowSize = "Normal";
-    QByteArray settingsGeometry;
+    QMap<QString, QByteArray> windowGeometry;
     timerColorsStruct timerColors;
     timerColorsStruct timerColorsDefault;
     bool isTimerCustomSize = false;

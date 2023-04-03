@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 
         QApplication::setQuitOnLastWindowClosed(false);
         MainWindow mainWindow;
-        //mainWindow.show();
+        mainWindow.show();
         return QApplication::exec();
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;

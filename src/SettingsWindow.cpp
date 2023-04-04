@@ -75,21 +75,33 @@ void SettingsWindow::comboBoxChanged(int index) {
 }
 
 void SettingsWindow::btnWorkColorClicked() {
+<<<<<<< HEAD
     const QColor color = QColorDialog::getColor(timerColors.work, this);
+=======
+    const QColor color = QColorDialog::getColor(timerColors.work);
+>>>>>>> c034459 (upd)
     if (!color.isValid()) return;
     timerColors.work = color;
     colorChange(ClockView::clockStateEnum::WORK, color);
 }
 
 void SettingsWindow::btnPauseColorClicked() {
+<<<<<<< HEAD
     const QColor color = QColorDialog::getColor(timerColors.pause, this);
+=======
+    const QColor color = QColorDialog::getColor(timerColors.pause);
+>>>>>>> c034459 (upd)
     if (!color.isValid()) return;
     timerColors.pause = color;
     colorChange(ClockView::clockStateEnum::PAUSE, color);
 }
 
 void SettingsWindow::btnStopColorClicked() {
+<<<<<<< HEAD
     const QColor color = QColorDialog::getColor(timerColors.stop, this);
+=======
+    const QColor color = QColorDialog::getColor(timerColors.stop);
+>>>>>>> c034459 (upd)
     if (!color.isValid()) return;
     timerColors.stop = color;
     colorChange(ClockView::clockStateEnum::STOP, color);

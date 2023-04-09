@@ -11,6 +11,8 @@ class DataBase;
 
 class Settings;
 
+class QMenu;
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
     class TasksWindow;
@@ -31,9 +33,9 @@ protected:
 
 public slots:
 
-    void customMenuRequested(QPoint pos);
+    void customTaskMenuRequested(QPoint pos);
 
-    void customHeaderMenuRequested(QPoint pos);
+    void customTaskHeaderMenuRequested(QPoint pos);
 
 private slots:
 
@@ -61,6 +63,7 @@ private:
     QSqlRelationalTableModel *modelTaskStatus;
     QSqlRelationalTableModel *modelTask;
     QSqlRelationalTableModel *modelTime;
+    QMenu *customTaskMenu;
 
     void setupTaskModel();
 

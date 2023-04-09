@@ -34,6 +34,15 @@ TasksWindow::TasksWindow(Settings *mSettings, QWidget *parent) : QMainWindow(par
     connect(ui->actionEditTask, &QAction::triggered, this, &TasksWindow::slotActionEditTask);
     connect(ui->actionDeleteTask, &QAction::triggered, this, &TasksWindow::slotDeleteTask);
 
+    customTaskMenu = new QMenu(this);
+    auto *actionEdit = new QAction(tr("Edit"), this);
+    auto *actionDelete = new QAction(tr("Delete"), this);
+    customTaskMenu->addAction(actionEdit);
+    customTaskMenu->addSeparator();
+    customTaskMenu->addAction(actionDelete);
+    connect(actionEdit, &QAction::triggered, this, &TasksWindow::slotActionEditTask);
+    connect(actionDelete, &QAction::triggered, this, &TasksWindow::slotDeleteTask);
+
     if (!settings->getWindowGeometry("tasks").isEmpty()) {
         restoreGeometry(settings->getWindowGeometry("tasks"));
     }
@@ -45,6 +54,7 @@ TasksWindow::~TasksWindow() {
     delete modelTaskStatus;
     delete modelTask;
     delete modelTime;
+    delete customTaskMenu;
 }
 
 void TasksWindow::slotUpdateModels() {
@@ -122,11 +132,11 @@ void TasksWindow::createUI() {
     connect(ui->tableViewtasks, &QTableView::clicked, this, &TasksWindow::slotSelectedTask);
 
     ui->tableViewtasks->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->tableViewtasks, &TableView::customContextMenuRequested, this, &TasksWindow::customMenuRequested);
+    connect(ui->tableViewtasks, &TableView::customContextMenuRequested, this, &TasksWindow::customTaskMenuRequested);
 
     ui->tableViewtasks->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->tableViewtasks->horizontalHeader(), &QHeaderView::customContextMenuRequested, this,
-            &TasksWindow::customHeaderMenuRequested);
+            &TasksWindow::customTaskHeaderMenuRequested);
 
     ui->tableViewtaskTime->setModel(modelTime);
     ui->tableViewtaskTime->setColumnHidden(0, true);
@@ -262,21 +272,12 @@ int TasksWindow::getSelectedTaskId(const QModelIndex &index) {
     return ui->tableViewtasks->model()->index(index.row(), 0).data().toInt();
 }
 
-void TasksWindow::customMenuRequested(QPoint pos) {
+void TasksWindow::customTaskMenuRequested(QPoint pos) {
     //QModelIndex index = ui->tableViewtasks->indexAt(pos);
-    auto *menu = new QMenu(this);
-    auto *actionEdit = new QAction("Edit", this);
-    auto *actionDelete = new QAction("Delete", this);
-
-    menu->addAction(actionEdit);
-    menu->addSeparator();
-    menu->addAction(actionDelete);
-    connect(actionEdit, &QAction::triggered, this, &TasksWindow::slotActionEditTask);
-    connect(actionDelete, &QAction::triggered, this, &TasksWindow::slotDeleteTask);
-    menu->popup(ui->tableViewtasks->viewport()->mapToGlobal(pos));
+    customTaskMenu->popup(ui->tableViewtasks->viewport()->mapToGlobal(pos));
 }
 
-void TasksWindow::customHeaderMenuRequested(QPoint pos) {
+void TasksWindow::customTaskHeaderMenuRequested(QPoint pos) {
     /*
     int column = ui->tableViewtasks->horizontalHeader()->logicalIndexAt(pos);
     auto *menu = new QMenu(this);

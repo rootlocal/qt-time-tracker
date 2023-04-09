@@ -2,17 +2,13 @@
 #define DATABASE_H
 
 #include <QObject>
-#include <QSql>
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QSqlDatabase>
-#include <QFile>
-#include <QDate>
-#include <QDebug>
 
 #define TABLE_TASK_STATUS       "task_status"
 #define TABLE_TASK              "task"
 #define TABLE_TASK_TIME         "task_time"
+
+class QSqlQuery;
 
 class DataBase : public QObject {
 Q_OBJECT

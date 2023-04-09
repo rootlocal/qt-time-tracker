@@ -2,10 +2,10 @@
 #define SETTINGS_H
 
 #include <QObject>
-#include <QSettings>
+#include <QColor>
 #include <QPoint>
 #include <QSize>
-#include <QColor>
+#include <QSettings>
 
 class Settings : public QObject {
 Q_OBJECT

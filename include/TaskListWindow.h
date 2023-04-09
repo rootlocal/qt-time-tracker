@@ -2,10 +2,14 @@
 #define LIST_TASK_WINDOW_H
 
 #include "QDialog"
-#include <QSqlTableModel>
-#include <QDataWidgetMapper>
-#include <QMessageBox>
-#include "Settings.h"
+
+class Settings;
+
+class QDataWidgetMapper;
+
+class QSqlTableModel;
+
+class QSqlQueryModel;
 
 namespace Ui {
     class TaskListWindow;

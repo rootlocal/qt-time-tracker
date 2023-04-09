@@ -1,11 +1,15 @@
 #include <QSqlQueryModel>
-#include "TaskListWindow.h"
-#include "ui_task_list_dialog.h"
-#include "DataBase.h"
 #include <QDebug>
 #include <QSqlRecord>
 #include <QSqlQuery>
 #include <QVariantList>
+#include <QMessageBox>
+#include <QSqlTableModel>
+#include <QDataWidgetMapper>
+#include "ui_task_list_dialog.h"
+#include "DataBase.h"
+#include "TaskListWindow.h"
+#include "Settings.h"
 
 QT_USE_NAMESPACE
 

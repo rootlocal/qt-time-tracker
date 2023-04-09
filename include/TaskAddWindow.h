@@ -1,11 +1,16 @@
 #ifndef ADD_TASK_WINDOW_H
 #define ADD_TASK_WINDOW_H
 
-#include "QDialog"
+#include <QDialog>
 #include <QSqlTableModel>
-#include <QDataWidgetMapper>
-#include <QMessageBox>
-#include <QSqlRelationalDelegate>
+
+class QDataWidgetMapper;
+
+class QSqlRelationalDelegate;
+
+class QSqlRelationalTableModel;
+
+class QSqlQueryModel;
 
 namespace Ui {
     class TaskAddWindow;

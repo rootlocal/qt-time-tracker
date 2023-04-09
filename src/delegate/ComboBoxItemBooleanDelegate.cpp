@@ -1,5 +1,6 @@
 #include <QDebug>
 #include <QComboBox>
+#include <QStringList>
 #include "delegate/ComboBoxItemBooleanDelegate.h"
 #include "model/BooleanItemModel.h"
 

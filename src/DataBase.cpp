@@ -1,7 +1,10 @@
 #include <QStandardPaths>
 #include <QDir>
 #include <QDateTime>
-#include <QDate>
+#include <QSql>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDebug>
 #include "DataBase.h"
 
 QT_USE_NAMESPACE

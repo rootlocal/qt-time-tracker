@@ -1,5 +1,3 @@
-#include <QSettings>
-#include <QColor>
 #include <QDebug>
 #include <QStandardPaths>
 #include <QDir>
@@ -10,6 +8,7 @@ QT_USE_NAMESPACE
 Settings::Settings(QObject *parent) : QObject(parent), qSettings(
         QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) + QDir::separator() + "config.ini",
         QSettings::IniFormat) {
+
     load();
 }
 

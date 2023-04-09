@@ -2,7 +2,6 @@
 #define ADVANCED_SETTINGS_H
 
 #include <QDialog>
-#include <QSettings>
 #include "view/clockview.h"
 #include "Settings.h"
 

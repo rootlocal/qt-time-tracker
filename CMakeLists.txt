@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.23)
 
 set(PACKAGE_MAJOR 0)
 set(PACKAGE_MINOR 1)
-set(PACKAGE_PATCH 1)
+set(PACKAGE_PATCH 2)
 
 project(time_tracker
         VERSION "${PACKAGE_MAJOR}.${PACKAGE_MINOR}.${PACKAGE_PATCH}"

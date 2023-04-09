@@ -1,7 +1,5 @@
-#include "RunGuard.h"
-
 #include <QCryptographicHash>
-
+#include "RunGuard.h"
 
 namespace {
 

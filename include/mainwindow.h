@@ -3,19 +3,16 @@
 
 #include <QWidget>
 #include <QSystemTrayIcon>
-#include <QTimer>
-#include "view/clockview.h"
-#include "ActionMenu.h"
-#include "SettingsWindow.h"
-#include "Settings.h"
-#include "TasksWindow.h"
-#include "TaskListWindow.h"
-#include "DataBase.h"
-
-class QSystemTrayIcon;
 
 class ClockView;
-
+class QTimer;
+class ClockView;
+class ActionMenu;
+class SettingsWindow;
+class Settings;
+class TasksWindow;
+class TaskListWindow;
+class DataBase;
 
 class MainWindow : public QWidget {
 Q_OBJECT

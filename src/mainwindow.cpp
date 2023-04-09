@@ -1,10 +1,17 @@
-#include <QSystemTrayIcon>
 #include <QCloseEvent>
 #include <QGuiApplication>
+#include <QMenu>
+#include <QAction>
+#include <QTimer>
+#include "view/clockview.h"
+#include "ActionMenu.h"
+#include "SettingsWindow.h"
+#include "Settings.h"
+#include "TasksWindow.h"
+#include "TaskListWindow.h"
+#include "DataBase.h"
 #include "icons.h"
 #include "mainwindow.h"
-#include "view/clockview.h"
-#include "SettingsWindow.h"
 #include "helpers/TimeDateHelper.h"
 
 QT_USE_NAMESPACE

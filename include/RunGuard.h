@@ -1,7 +1,6 @@
 #ifndef RUN_GUARD_H
 #define RUN_GUARD_H
 
-
 #include <QObject>
 #include <QSharedMemory>
 #include <QSystemSemaphore>

@@ -1,6 +1,9 @@
-#include "view/clockview.h"
-#include "ui_clock_view_widget.h"
 #include <QMouseEvent>
+#include <QMenu>
+#include <QAction>
+#include "ActionMenu.h"
+#include "ui_clock_view_widget.h"
+#include "view/clockview.h"
 
 QT_USE_NAMESPACE
 
@@ -73,7 +76,7 @@ void ClockView::setState(clockStateEnum clockState) {
     }
 }
 
-void ClockView::setColor(ClockView::clockStateEnum clockState, QColor color) {
+void ClockView::setColor(ClockView::clockStateEnum clockState, const QColor &color) {
     switch (clockState) {
         case clockStateEnum::WORK:
             colors.work = color;

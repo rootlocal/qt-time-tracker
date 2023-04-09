@@ -1,8 +1,8 @@
-#include "SettingsWindow.h"
-#include "ui_settings_window.h"
 #include <QColorDialog>
 #include <QDebug>
 #include <QSettings>
+#include "SettingsWindow.h"
+#include "ui_settings_window.h"
 
 QT_USE_NAMESPACE
 

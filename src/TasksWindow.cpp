@@ -1,14 +1,17 @@
-#include "TasksWindow.h"
-#include "ui_tasks_window.h"
-#include "TaskAddWindow.h"
-#include "delegate/SqlDelegate.h"
-#include "delegate/ComboBoxItemBooleanDelegate.h"
-#include "helpers/TimeDateHelper.h"
 #include <QDebug>
 #include <QAbstractItemModel>
 #include <QSqlQuery>
 #include <QVariant>
-#include <cmath>
+#include <QSqlRelationalTableModel>
+#include <QSqlError>
+#include <QMessageBox>
+#include "Settings.h"
+#include "DataBase.h"
+#include "TasksWindow.h"
+#include "ui_tasks_window.h"
+#include "TaskAddWindow.h"
+#include "delegate/SqlDelegate.h"
+#include "helpers/TimeDateHelper.h"
 
 QT_USE_NAMESPACE
 
@@ -250,4 +253,12 @@ uint TasksWindow::getSelectedTaskId() {
 
 int TasksWindow::getSelectedTaskId(const QModelIndex &index) {
     return ui->tableViewtasks->model()->index(index.row(), 0).data().toInt();
+}
+
+void TasksWindow::customMenuRequested(QPoint pos) {
+
+}
+
+void TasksWindow::customHeaderMenuRequested(QPoint pos) {
+
 }

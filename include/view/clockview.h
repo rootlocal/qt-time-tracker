@@ -2,8 +2,11 @@
 #define CLOCK_VIEW_H
 
 #include <QWidget>
-#include "ActionMenu.h"
+#include <QObject>
 #include "Settings.h"
+
+class ActionMenu;
+class QMenu;
 
 namespace Ui {
     class ClockView;
@@ -38,7 +41,7 @@ public slots:
 
     void setState(clockStateEnum state);
 
-    void setColor(ClockView::clockStateEnum state, QColor color);
+    void setColor(ClockView::clockStateEnum state, const QColor& color);
 
     void showContextMenu(const QPoint &point);
 

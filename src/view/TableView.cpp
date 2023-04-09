@@ -2,6 +2,8 @@
 #include <QDebug>
 #include <QSqlTableModel>
 #include <QDebug>
+#include <QMouseEvent>
+#include <QStandardItemModel>
 
 TableView::TableView(QWidget *parent) : QTableView(parent) {
     horizontalHeaderView = new HorizontalHeaderView(this);

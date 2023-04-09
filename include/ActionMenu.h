@@ -2,9 +2,9 @@
 #define ACTION_MENU_H
 
 #include <QWidget>
-#include <QMenu>
 
 class QAction;
+class QMenu;
 
 class ActionMenu : public QWidget {
 Q_OBJECT

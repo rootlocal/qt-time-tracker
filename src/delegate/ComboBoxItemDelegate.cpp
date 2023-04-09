@@ -1,6 +1,8 @@
-#include "delegate/ComboBoxItemDelegate.h"
-#include <QDebug>
+#include <QSqlRelationalDelegate>
+#include <QComboBox>
 #include <utility>
+#include <QDebug>
+#include "delegate/ComboBoxItemDelegate.h"
 
 ComboBoxItemDelegate::ComboBoxItemDelegate(QStringList valueList,
                                            QObject *parent) : QItemDelegate(parent),

@@ -2,11 +2,14 @@
 #define TASKS_WINDOW_H
 
 #include <QMainWindow>
-#include <QSystemTrayIcon>
-#include <QSqlRelationalTableModel>
-#include "Settings.h"
-#include "DataBase.h"
-#include "view/TableView.h"
+
+class TableView;
+
+class QSqlRelationalTableModel;
+
+class DataBase;
+
+class Settings;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -28,6 +31,9 @@ protected:
 
 public slots:
 
+    void customMenuRequested(QPoint pos);
+
+    void customHeaderMenuRequested(QPoint pos);
 
 private slots:
 

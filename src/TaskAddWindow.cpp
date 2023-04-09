@@ -3,6 +3,10 @@
 #include <QSqlRecord>
 #include <QSqlField>
 #include <QSqlRelationalDelegate>
+#include <QSqlTableModel>
+#include <QDataWidgetMapper>
+#include <QMessageBox>
+
 #include "TaskAddWindow.h"
 #include "ui_task_add_dialog.h"
 #include "DataBase.h"

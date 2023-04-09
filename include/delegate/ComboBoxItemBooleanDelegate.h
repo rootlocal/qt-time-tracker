@@ -1,8 +1,9 @@
 #ifndef COMBO_BOX_ITEM_BOOLEAN_DELEGATE_H
 #define COMBO_BOX_ITEM_BOOLEAN_DELEGATE_H
 
-#include <QStringList>
-#include "QItemDelegate"
+#include <QItemDelegate>
+
+class QStringList;
 
 class ComboBoxItemBooleanDelegate : public QItemDelegate {
 Q_OBJECT

@@ -1,3 +1,6 @@
+#include <QMenu>
+#include <QAction>
+#include <QList>
 #include "ActionMenu.h"
 
 QT_USE_NAMESPACE

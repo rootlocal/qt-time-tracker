@@ -2,10 +2,10 @@
 #define TABLE_VIEW_H
 
 #include <QTableView>
-#include <QStandardItemModel>
 #include <QHeaderView>
-#include <QMouseEvent>
-#include <QApplication>
+
+class QMouseEvent;
+class QStandardItemModel;
 
 class TableView : public QTableView {
 Q_OBJECT

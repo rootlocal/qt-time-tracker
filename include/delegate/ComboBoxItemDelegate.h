@@ -2,8 +2,10 @@
 #define COMBO_BOX_ITEM_DELEGATE_H
 
 #include <QItemDelegate>
-#include <QSqlRelationalDelegate>
-#include <QComboBox>
+
+class QSqlRelationalDelegate;
+
+class QComboBox;
 
 class ComboBoxItemDelegate : public QItemDelegate {
 Q_OBJECT

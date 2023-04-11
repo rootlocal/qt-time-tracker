@@ -73,13 +73,6 @@ TaskAddWindow::~TaskAddWindow() {
 
 void TaskAddWindow::accept() {
     QVariant id = model->data(model->index(mapper->currentIndex(), 0), Qt::DisplayRole);
-
-    if (id.isNull()) {
-        ui->lineEditCreated->setText(DataBase::getCurrentDateTime());
-    }
-
-    ui->lineEditUpdated->setText(DataBase::getCurrentDateTime());
-
     if (ui->lineEditName->text().isEmpty()) {
         QMessageBox::critical(this, tr("Error"), tr("Name is empty"));
         return;

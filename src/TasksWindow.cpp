@@ -2,7 +2,6 @@
 #include <QAbstractItemModel>
 #include <QSqlQuery>
 #include <QVariant>
-#include <QSqlRelationalTableModel>
 #include <QSqlError>
 #include <QMessageBox>
 #include "Settings.h"
@@ -12,6 +11,8 @@
 #include "TaskAddWindow.h"
 #include "delegate/SqlDelegate.h"
 #include "helpers/TimeDateHelper.h"
+#include "model/TaskModel.h"
+#include "model/TaskTimeModel.h"
 
 QT_USE_NAMESPACE
 
@@ -24,8 +25,8 @@ TasksWindow::TasksWindow(Settings *mSettings, QWidget *parent) : QMainWindow(par
     ui->actionDeleteTask->setDisabled(true);
     ui->actionEditTask->setDisabled(true);
     setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint);
-    this->setupTaskModel();
-    this->setupTimeModel();
+    modelTask = new TaskModel(this);
+    modelTime = new TaskTimeModel(this);
     this->createUI();
     connect(ui->btnCreate, &QPushButton::clicked, this, &TasksWindow::slotAddTask);
     connect(ui->btnDelete, &QPushButton::clicked, this, &TasksWindow::slotDeleteTask);
@@ -51,7 +52,6 @@ TasksWindow::TasksWindow(Settings *mSettings, QWidget *parent) : QMainWindow(par
 TasksWindow::~TasksWindow() {
     delete ui;
     delete db;
-    delete modelTaskStatus;
     delete modelTask;
     delete modelTime;
     delete customTaskMenu;
@@ -62,51 +62,6 @@ void TasksWindow::slotUpdateModels() {
     ui->btnDelete->setDisabled(true);
     ui->actionDeleteTask->setDisabled(true);
     ui->actionEditTask->setDisabled(true);
-}
-
-void TasksWindow::setupTaskModel() {
-    modelTaskStatus = new QSqlRelationalTableModel(this);
-    modelTaskStatus->setTable(TABLE_TASK_STATUS);
-
-    modelTask = new QSqlRelationalTableModel(this);
-    modelTask->setTable(TABLE_TASK);
-    modelTask->setRelation(2, QSqlRelation(TABLE_TASK_STATUS, "type", "name"));
-
-    QStringList headersColumnsList;
-    headersColumnsList.append(tr("id"));                // 0
-    headersColumnsList.append(tr("Name"));              // 1
-    headersColumnsList.append(tr("Status"));            // 2
-    headersColumnsList.append(tr("Description"));       // 3
-    headersColumnsList.append(tr("Created"));           // 4
-    headersColumnsList.append(tr("Updated"));           // 5
-
-    for (int i = 0, j = 0; i < modelTask->columnCount(); i++, j++) {
-        modelTask->setHeaderData(i, Qt::Horizontal, headersColumnsList[j]);
-    }
-
-    modelTask->setSort(5, Qt::DescendingOrder);
-    modelTask->setEditStrategy(QSqlTableModel::OnManualSubmit);
-}
-
-void TasksWindow::setupTimeModel() {
-    modelTime = new QSqlRelationalTableModel(this);
-    modelTime->setTable(TABLE_TASK_TIME);
-    modelTime->setRelation(1, QSqlRelation(TABLE_TASK, "id", "name"));
-
-    QStringList headersColumnsList;
-    headersColumnsList.append(tr("id"));                    // 0
-    headersColumnsList.append(tr("Task"));                  // 1
-    headersColumnsList.append(tr("Time"));                  // 2
-    headersColumnsList.append(tr("Created"));               // 3
-    headersColumnsList.append(tr("Updated"));               // 4
-    headersColumnsList.append(tr("Description"));           // 5
-
-    for (int i = 0, j = 0; i < modelTime->columnCount(); i++, j++) {
-        modelTime->setHeaderData(i, Qt::Horizontal, headersColumnsList[j]);
-    }
-
-    modelTime->setSort(4, Qt::DescendingOrder);
-    modelTask->setEditStrategy(QSqlTableModel::OnManualSubmit);
 }
 
 void TasksWindow::createUI() {

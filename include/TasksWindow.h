@@ -12,6 +12,8 @@ class DataBase;
 class Settings;
 
 class QMenu;
+class TaskModel;
+class TaskTimeModel;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -59,15 +61,9 @@ private:
     Ui::TasksWindow *ui;
     Settings *settings;
     DataBase *db;
-
-    QSqlRelationalTableModel *modelTaskStatus;
-    QSqlRelationalTableModel *modelTask;
-    QSqlRelationalTableModel *modelTime;
+    TaskModel *modelTask;
+    TaskTimeModel *modelTime;
     QMenu *customTaskMenu;
-
-    void setupTaskModel();
-
-    void setupTimeModel();
 
     void createUI();
 

@@ -160,18 +160,23 @@ void SettingsWindow::reject() {
     this->hide();
 }
 
-void SettingsWindow::hide() {
-    QDialog::hide();
-}
-
-void SettingsWindow::closeEvent(QCloseEvent *event) {
-    settings->setWindowGeometry("settings", saveGeometry());
-}
-
+// почему-то из showEvent не работает, надо дебажить
 void SettingsWindow::show() {
     if (!settings->getWindowGeometry("settings").isEmpty()) {
         restoreGeometry(settings->getWindowGeometry("settings"));
     }
 
     QDialog::show();
+}
+
+void SettingsWindow::moveEvent(QMoveEvent *event) {
+    settings->setWindowGeometry("settings", saveGeometry());
+}
+
+void SettingsWindow::resizeEvent(QResizeEvent *event) {
+    settings->setWindowGeometry("settings", saveGeometry());
+}
+
+void SettingsWindow::closeEvent(QCloseEvent *event) {
+
 }

@@ -32,9 +32,6 @@ signals:
     void settingsWindowReject();
 
 public slots:
-
-    void hide();
-
     void show();
 
     void accept() override;
@@ -57,6 +54,10 @@ private slots:
 
 protected:
     void closeEvent(QCloseEvent *event) override;
+
+    void moveEvent(QMoveEvent *event) override;
+
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
     void colorChange(ClockView::clockStateEnum state, const QColor &color);

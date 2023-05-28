@@ -12,7 +12,9 @@ class DataBase;
 class Settings;
 
 class QMenu;
+
 class TaskModel;
+
 class TaskTimeModel;
 
 QT_BEGIN_NAMESPACE
@@ -31,9 +33,12 @@ public:
 signals:
 
 protected:
-    void closeEvent(QCloseEvent *event) override;
+    void moveEvent(QMoveEvent *event) override;
+
+    void resizeEvent(QResizeEvent *event) override;
 
 public slots:
+    void show();
 
     void customTaskMenuRequested(QPoint pos);
 

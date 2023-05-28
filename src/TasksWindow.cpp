@@ -43,10 +43,6 @@ TasksWindow::TasksWindow(Settings *mSettings, QWidget *parent) : QMainWindow(par
     customTaskMenu->addAction(actionDelete);
     connect(actionEdit, &QAction::triggered, this, &TasksWindow::slotActionEditTask);
     connect(actionDelete, &QAction::triggered, this, &TasksWindow::slotDeleteTask);
-
-    if (!settings->getWindowGeometry("tasks").isEmpty()) {
-        restoreGeometry(settings->getWindowGeometry("tasks"));
-    }
 }
 
 TasksWindow::~TasksWindow() {
@@ -215,7 +211,20 @@ void TasksWindow::deleteTask(int row) {
     modelTask->select();
 }
 
-void TasksWindow::closeEvent(QCloseEvent *event) {
+// почему-то из showEvent не работает, надо дебажить
+void TasksWindow::show(){
+    if (!settings->getWindowGeometry("tasks").isEmpty()) {
+        restoreGeometry(settings->getWindowGeometry("tasks"));
+    }
+
+    QMainWindow::show();
+}
+
+void TasksWindow::moveEvent(QMoveEvent *event) {
+    settings->setWindowGeometry("tasks", saveGeometry());
+}
+
+void TasksWindow::resizeEvent(QResizeEvent *event) {
     settings->setWindowGeometry("tasks", saveGeometry());
 }
 

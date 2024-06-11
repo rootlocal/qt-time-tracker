@@ -15,6 +15,12 @@ public:
 
     ~Settings() override;
 
+    const struct timerWindowsSizesStruct {
+        QSize SMALL = QSize(100, 24);
+        QSize NORMAL = QSize(124, 28);
+        QSize BIG = QSize(134, 34);
+    } timerWindowsSizesStruct;
+
     struct timerColorsStruct {
         QColor work = QColor(150, 255, 150);
         QColor pause = QColor(255, 255, 120);

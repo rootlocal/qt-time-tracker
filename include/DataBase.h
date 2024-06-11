@@ -27,13 +27,13 @@ public:
 
     void connectToDataBase();
 
-    bool isStatusExits(const taskStatusEnum &type);
+    static bool isStatusExits(const taskStatusEnum &type);
 
     bool insertIntoTaskStatusTable(const taskStatusEnum &type, const QString &name);
 
     bool isTaskExits(const QString &name);
 
-    int taskCount();
+    static int taskCount();
 
     bool insertIntoTaskTable(const QString &name, const QString &description);
 

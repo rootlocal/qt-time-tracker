@@ -117,9 +117,9 @@ QString Settings::getTimerWindowSizesItem(int index) {
 QMap<QString, QSize> Settings::getTimerWindowSizes() {
 
     if (timerWindowSizes.isEmpty()) {
-        timerWindowSizes.insert("Small", QSize(100, 24));
-        timerWindowSizes.insert("Normal", QSize(124, 28));
-        timerWindowSizes.insert("Big", QSize(134, 34));
+        timerWindowSizes.insert("Small", timerWindowsSizesStruct.SMALL);
+        timerWindowSizes.insert("Normal", timerWindowsSizesStruct.NORMAL);
+        timerWindowSizes.insert("Big", timerWindowsSizesStruct.BIG);
     }
 
     return timerWindowSizes;
@@ -131,7 +131,7 @@ QSize Settings::getTimerWindowSize(const QString &name) {
         return getTimerWindowSizes().value(name);
     }
 
-    return {124, 28};
+    return timerWindowsSizesStruct.NORMAL;
 }
 
 

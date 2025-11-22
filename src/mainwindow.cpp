@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     connect(timer, &QTimer::timeout, this, &MainWindow::slotUpdateTimerDisplay);
 
     setState(workStateEnum::STOPPED);
-    this->clockHide();
+    this->clockShow();
 }
 
 MainWindow::~MainWindow() {

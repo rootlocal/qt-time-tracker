@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     connect(timer, &QTimer::timeout, this, &MainWindow::slotUpdateTimerDisplay);
 
     setState(workStateEnum::STOPPED);
+    this->clockHide();
 }
 
 MainWindow::~MainWindow() {
@@ -65,11 +66,11 @@ void MainWindow::initActions() {
     connect(menu->getAction(ActionMenu::Action::STOP), SIGNAL(triggered()), SLOT(actionStop()));
 }
 
-void MainWindow::show() {
+void MainWindow::clockShow() {
     clock->show();
 }
 
-void MainWindow::hide() {
+void MainWindow::clockHide() {
     clock->hide();
 }
 
@@ -77,16 +78,16 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason) {
 
     if (reason == QSystemTrayIcon::Trigger) {
         if (!clock->isVisible()) {
-            this->show();
+            this->clockShow();
         } else {
-            this->hide();
+            this->clockHide();
         }
     }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     event->ignore();
-    this->hide();
+    this->clockHide();
 }
 
 void MainWindow::timerEvent(QTimerEvent *event) {

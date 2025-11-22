@@ -5,13 +5,21 @@
 #include <QSystemTrayIcon>
 
 class ClockView;
+
 class QTimer;
+
 class ClockView;
+
 class ActionMenu;
+
 class SettingsWindow;
+
 class Settings;
+
 class TasksWindow;
+
 class TaskListWindow;
+
 class DataBase;
 
 class MainWindow : public QWidget {
@@ -35,9 +43,9 @@ protected:
 
 public slots:
 
-    void show();
+    void clockShow();
 
-    void hide();
+    void clockHide();
 
 private slots:
 

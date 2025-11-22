@@ -5,6 +5,9 @@
 #include <QSharedMemory>
 #include <QSystemSemaphore>
 
+#define MEMLOCK_KEY "_memLockKey_quem1Boo"
+#define SHAREDMEM_KEY "_sharedMemKey_quem1Boo"
+
 class RunGuard {
 
 public:

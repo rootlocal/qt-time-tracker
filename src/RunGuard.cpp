@@ -16,8 +16,8 @@ namespace {
 }
 
 RunGuard::RunGuard(const QString &key)
-        : key(key), memLockKey(generateKeyHash(key, "_memLockKey")),
-          sharedMemKey(generateKeyHash(key, "_sharedMemKey")), sharedMem(sharedMemKey), memLock(memLockKey, 1) {
+        : key(key), memLockKey(generateKeyHash(key, MEMLOCK_KEY)),
+          sharedMemKey(generateKeyHash(key, SHAREDMEM_KEY)), sharedMem(sharedMemKey), memLock(memLockKey, 1) {
     memLock.acquire();
     {
         QSharedMemory fix(sharedMemKey);

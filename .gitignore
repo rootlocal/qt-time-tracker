@@ -65,3 +65,6 @@ compile_commands.json
 
 # Editor temp/backup files
 *~
+
+# Ide
+.idea

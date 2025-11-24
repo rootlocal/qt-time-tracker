@@ -10,7 +10,7 @@ class QTimer;
 
 class ClockView;
 
-class ActionMenu;
+class ClockViewMenu;
 
 class SettingsWindow;
 
@@ -66,17 +66,13 @@ private slots:
     void slotUpdateTimerDisplay();
 
 private:
-    void initDefaultMenu();
-
-    void initActions();
-
     QSystemTrayIcon *systemTrayIcon;
     quint64 seconds = 0;
     ClockView *clock;
     SettingsWindow *settingsWindow;
     Settings *settings;
-    workStateEnum state;
-    ActionMenu *menu;
+    workStateEnum state = workStateEnum::STOPPED;
+    ClockViewMenu *clockViewMenu;
     QTimer *timer;
     TasksWindow *tasksWindow;
     quint64 currentTask = 0;

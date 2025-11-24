@@ -4,8 +4,6 @@
 #include <QSqlQuery>
 #include <QVariantList>
 #include <QMessageBox>
-#include <QSqlTableModel>
-#include <QDataWidgetMapper>
 #include "ui_task_list_dialog.h"
 #include "DataBase.h"
 #include "TaskListWindow.h"
@@ -20,8 +18,9 @@ TaskListWindow::TaskListWindow(Settings *mSettings, QWidget *parent) : QDialog(p
 
     if (!settings->getWindowGeometry("taskList").isEmpty()) {
         restoreGeometry(settings->getWindowGeometry("taskList"));
+    } else {
+        this->resize(348, 207);
     }
-    this->resize(348, 207);
 
     ui->comboBoxTasks->clear();
     QStringList statusesIds;

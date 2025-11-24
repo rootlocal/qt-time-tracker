@@ -13,6 +13,7 @@
 #include "helpers/TimeDateHelper.h"
 #include "model/TaskModel.h"
 #include "model/TaskTimeModel.h"
+#include "menu/TaskListMenu.h"
 
 QT_USE_NAMESPACE
 
@@ -35,14 +36,21 @@ TasksWindow::TasksWindow(Settings *mSettings, QWidget *parent) : QMainWindow(par
     connect(ui->actionEditTask, &QAction::triggered, this, &TasksWindow::slotActionEditTask);
     connect(ui->actionDeleteTask, &QAction::triggered, this, &TasksWindow::slotDeleteTask);
 
-    customTaskMenu = new QMenu(this);
-    auto *actionEdit = new QAction(tr("Edit"), this);
-    auto *actionDelete = new QAction(tr("Delete"), this);
-    customTaskMenu->addAction(actionEdit);
-    customTaskMenu->addSeparator();
-    customTaskMenu->addAction(actionDelete);
-    connect(actionEdit, &QAction::triggered, this, &TasksWindow::slotActionEditTask);
-    connect(actionDelete, &QAction::triggered, this, &TasksWindow::slotDeleteTask);
+    taskListMenu = new TaskListMenu(this);
+
+    connect(
+            taskListMenu->getAction(TaskListMenu::Action::EDIT),
+            &QAction::triggered,
+            this,
+            &TasksWindow::slotActionEditTask
+    );
+
+    connect(
+            taskListMenu->getAction(TaskListMenu::Action::DELETE),
+            &QAction::triggered,
+            this,
+            &TasksWindow::slotDeleteTask
+    );
 }
 
 TasksWindow::~TasksWindow() {
@@ -50,7 +58,7 @@ TasksWindow::~TasksWindow() {
     delete db;
     delete modelTask;
     delete modelTime;
-    delete customTaskMenu;
+    delete taskListMenu;
 }
 
 void TasksWindow::slotUpdateModels() {
@@ -211,8 +219,7 @@ void TasksWindow::deleteTask(int row) {
     modelTask->select();
 }
 
-// почему-то из showEvent не работает, надо дебажить
-void TasksWindow::show(){
+void TasksWindow::show() {
     if (!settings->getWindowGeometry("tasks").isEmpty()) {
         restoreGeometry(settings->getWindowGeometry("tasks"));
     }
@@ -238,7 +245,7 @@ int TasksWindow::getSelectedTaskId(const QModelIndex &index) {
 
 void TasksWindow::customTaskMenuRequested(QPoint pos) {
     //QModelIndex index = ui->tableViewtasks->indexAt(pos);
-    customTaskMenu->popup(ui->tableViewtasks->viewport()->mapToGlobal(pos));
+    taskListMenu->getMenu()->popup(ui->tableViewtasks->viewport()->mapToGlobal(pos));
 }
 
 void TasksWindow::customTaskHeaderMenuRequested(QPoint pos) {

@@ -1,15 +1,15 @@
 #include <QMouseEvent>
 #include <QMenu>
 #include <QAction>
-#include "ActionMenu.h"
+#include "menu/ClockViewMenu.h"
 #include "ui_clock_view_widget.h"
 #include "view/clockview.h"
 
 QT_USE_NAMESPACE
 
-ClockView::ClockView(QWidget *parent, ActionMenu *actionMenu, Settings *mSettings) : QWidget(parent),
-                                                                                     ui(new Ui::ClockView),
-                                                                                     state(clockStateEnum::STOP) {
+ClockView::ClockView(QWidget *parent, ClockViewMenu *actionMenu, Settings *mSettings) : QWidget(parent),
+                                                                                        ui(new Ui::ClockView),
+                                                                                        state(clockStateEnum::STOP) {
     settings = mSettings;
     menu = actionMenu->getMenu();
     colors = settings->getTimerColors();

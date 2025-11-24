@@ -6,7 +6,7 @@
 #include <QTime>
 #include <QDebug>
 #include "view/clockview.h"
-#include "ActionMenu.h"
+#include "menu/ClockViewMenu.h"
 #include "SettingsWindow.h"
 #include "Settings.h"
 #include "TasksWindow.h"
@@ -25,14 +25,14 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     timer = new QTimer(this);
     timer->setInterval(1000);
     settings = new Settings(this);
-    menu = new ActionMenu(this);
+
+    clockViewMenu = new ClockViewMenu(this);
+    clock = new ClockView(this, clockViewMenu, settings);
+
     systemTrayIcon = new QSystemTrayIcon(QIcon(TRAY_ICON), this);
-    clock = new ClockView(this, menu, settings);
+
     settingsWindow = new SettingsWindow(this, settings);
-    state = workStateEnum::STOPPED;
     tasksWindow = new TasksWindow(settings, this);
-    initActions();
-    initDefaultMenu();
 
     connect(settingsWindow, &SettingsWindow::signalSizeChanged, clock, &ClockView::setSize);
     connect(settingsWindow, &SettingsWindow::signalColorChange, clock, &ClockView::setColor);
@@ -41,32 +41,49 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     connect(clock, &ClockView::pauseClicked, this, &MainWindow::actionPause);
     connect(timer, &QTimer::timeout, this, &MainWindow::slotUpdateTimerDisplay);
 
-    setState(workStateEnum::STOPPED);
+    connect(
+            clockViewMenu->getAction(ClockViewMenu::Action::SETTINGS),
+            SIGNAL(triggered()),
+            settingsWindow,
+            SLOT(show())
+    );
+    connect(
+            clockViewMenu->getAction(ClockViewMenu::Action::TASKS), SIGNAL(triggered()),
+            tasksWindow,
+            SLOT(show())
+    );
+    connect(
+            clockViewMenu->getAction(ClockViewMenu::Action::START), SIGNAL(triggered()),
+            SLOT(slotSelectTask())
+    );
+    connect(
+            clockViewMenu->getAction(ClockViewMenu::Action::PAUSE), SIGNAL(triggered()),
+            SLOT(actionPause())
+    );
+    connect(
+            clockViewMenu->getAction(ClockViewMenu::Action::STOP), SIGNAL(triggered()),
+            SLOT(actionStop())
+    );
+    connect(
+            clockViewMenu->getAction(ClockViewMenu::Action::EXIT), SIGNAL(triggered()),
+            qApp,
+            SLOT(quit())
+    );
+
+    this->setState(state);
+    systemTrayIcon->setContextMenu(clockViewMenu->getMenu());
+    systemTrayIcon->show();
     this->clockShow();
 }
 
 MainWindow::~MainWindow() {
     db->closeDataBase();
     delete systemTrayIcon;
-    delete menu;
+    delete clockViewMenu;
     delete settingsWindow;
     delete timer;
     delete tasksWindow;
     delete db;
-}
-
-void MainWindow::initDefaultMenu() {
-    connect(menu->getAction(ActionMenu::Action::EXIT), SIGNAL(triggered()), qApp, SLOT(quit()));
-    systemTrayIcon->setContextMenu(menu->getMenu());
-    systemTrayIcon->show();
-}
-
-void MainWindow::initActions() {
-    connect(menu->getAction(ActionMenu::Action::SETTINGS), SIGNAL(triggered()), settingsWindow, SLOT(show()));
-    connect(menu->getAction(ActionMenu::Action::TASKS), SIGNAL(triggered()), tasksWindow, SLOT(show()));
-    connect(menu->getAction(ActionMenu::Action::START), SIGNAL(triggered()), SLOT(slotSelectTask()));
-    connect(menu->getAction(ActionMenu::Action::PAUSE), SIGNAL(triggered()), SLOT(actionPause()));
-    connect(menu->getAction(ActionMenu::Action::STOP), SIGNAL(triggered()), SLOT(actionStop()));
 }
 
 void MainWindow::clockShow() {
@@ -157,21 +174,21 @@ void MainWindow::setState(workStateEnum clockState) {
 
     switch (clockState) {
         case workStateEnum::RUNNING:
-            menu->getAction(ActionMenu::Action::START)->setVisible(false);
-            menu->getAction(ActionMenu::Action::PAUSE)->setVisible(true);
-            menu->getAction(ActionMenu::Action::STOP)->setVisible(true);
+            clockViewMenu->getAction(ClockViewMenu::Action::START)->setVisible(false);
+            clockViewMenu->getAction(ClockViewMenu::Action::PAUSE)->setVisible(true);
+            clockViewMenu->getAction(ClockViewMenu::Action::STOP)->setVisible(true);
             clock->setState(ClockView::clockStateEnum::WORK);
             break;
         case workStateEnum::PAUSED:
-            menu->getAction(ActionMenu::Action::START)->setVisible(true);
-            menu->getAction(ActionMenu::Action::PAUSE)->setVisible(false);
-            menu->getAction(ActionMenu::Action::STOP)->setVisible(true);
+            clockViewMenu->getAction(ClockViewMenu::Action::START)->setVisible(true);
+            clockViewMenu->getAction(ClockViewMenu::Action::PAUSE)->setVisible(false);
+            clockViewMenu->getAction(ClockViewMenu::Action::STOP)->setVisible(true);
             clock->setState(ClockView::clockStateEnum::PAUSE);
             break;
         default:
-            menu->getAction(ActionMenu::Action::START)->setVisible(true);
-            menu->getAction(ActionMenu::Action::PAUSE)->setVisible(false);
-            menu->getAction(ActionMenu::Action::STOP)->setVisible(false);
+            clockViewMenu->getAction(ClockViewMenu::Action::START)->setVisible(true);
+            clockViewMenu->getAction(ClockViewMenu::Action::PAUSE)->setVisible(false);
+            clockViewMenu->getAction(ClockViewMenu::Action::STOP)->setVisible(false);
             clock->setState(ClockView::clockStateEnum::STOP);
             break;
     }

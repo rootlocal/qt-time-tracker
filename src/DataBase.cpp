@@ -13,7 +13,7 @@ DataBase::DataBase(QObject *parent) : QObject(parent) {
     QString appConfigPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
     databaseName = appConfigPath + QDir::separator() + "tasks.db";
 
-    if (!QDir(appConfigPath).exists()){
+    if (!QDir(appConfigPath).exists()) {
         QDir().mkdir(appConfigPath);
     }
 }

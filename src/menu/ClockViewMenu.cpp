@@ -1,11 +1,11 @@
 #include <QMenu>
 #include <QAction>
 #include <QList>
-#include "ActionMenu.h"
+#include "menu/ClockViewMenu.h"
 
 QT_USE_NAMESPACE
 
-ActionMenu::ActionMenu(QWidget *parent) : QWidget(parent) {
+ClockViewMenu::ClockViewMenu(QWidget *parent) : QWidget(parent) {
     menu = new QMenu(this);
     QList<QAction *> timerActions;
     QList<QAction *> appActions;
@@ -27,7 +27,7 @@ ActionMenu::ActionMenu(QWidget *parent) : QWidget(parent) {
     menu->addActions(appActions);
 }
 
-ActionMenu::~ActionMenu() {
+ClockViewMenu::~ClockViewMenu() {
     delete menu;
     delete actionSettings;
     delete actionExit;
@@ -37,7 +37,7 @@ ActionMenu::~ActionMenu() {
     delete actionTasks;
 }
 
-QAction *ActionMenu::getAction(Action action) {
+QAction *ClockViewMenu::getAction(Action action) {
     switch (action) {
         case Action::SETTINGS:
             return actionSettings;
@@ -56,6 +56,6 @@ QAction *ActionMenu::getAction(Action action) {
     }
 }
 
-QMenu *ActionMenu::getMenu() {
+QMenu *ClockViewMenu::getMenu() {
     return menu;
 }

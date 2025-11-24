@@ -160,7 +160,6 @@ void SettingsWindow::reject() {
     this->hide();
 }
 
-// почему-то из showEvent не работает, надо дебажить
 void SettingsWindow::show() {
     if (!settings->getWindowGeometry("settings").isEmpty()) {
         restoreGeometry(settings->getWindowGeometry("settings"));

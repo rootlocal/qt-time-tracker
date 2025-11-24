@@ -5,7 +5,7 @@
 #include <QObject>
 #include "Settings.h"
 
-class ActionMenu;
+class ClockViewMenu;
 class QMenu;
 
 namespace Ui {
@@ -23,7 +23,7 @@ public:
         STOP
     };
 
-    explicit ClockView(QWidget *parent = nullptr, ActionMenu *actionMenu = nullptr, Settings *mSettings = nullptr);
+    explicit ClockView(QWidget *parent = nullptr, ClockViewMenu *actionMenu = nullptr, Settings *mSettings = nullptr);
 
     ~ClockView() override;
 

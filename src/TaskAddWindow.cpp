@@ -18,7 +18,7 @@ TaskAddWindow::TaskAddWindow(QSqlRelationalTableModel *parentModel, int row, QWi
                                                                                                 model(parentModel) {
     ui->setupUi(this);
     statusModel = new QSqlQueryModel(this);
-    QString statusModelQueryString = QString("SELECT t.id, t.type, t.name FROM %1 as t ORDER BY t.updated DESC").arg(TABLE_TASK_STATUS);
+    QString statusModelQueryString = QString("SELECT t.id, t.type, t.name FROM %1 as t").arg(TABLE_TASK_STATUS);
     QSqlQuery statusModelQuery;
     statusModelQuery.exec(statusModelQueryString);
     statusModel->setQuery(statusModelQuery);

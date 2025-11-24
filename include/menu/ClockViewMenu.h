@@ -6,7 +6,7 @@
 class QAction;
 class QMenu;
 
-class ActionMenu : public QWidget {
+class ClockViewMenu : public QWidget {
 Q_OBJECT
 
 public:
@@ -20,9 +20,9 @@ public:
         TASKS,
     };
 
-    explicit ActionMenu(QWidget *parent = nullptr);
+    explicit ClockViewMenu(QWidget *parent = nullptr);
 
-    ~ActionMenu() override;
+    ~ClockViewMenu() override;
 
     QAction *getAction(Action action);
 

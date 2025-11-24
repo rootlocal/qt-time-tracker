@@ -11,11 +11,11 @@ class DataBase;
 
 class Settings;
 
-class QMenu;
-
 class TaskModel;
 
 class TaskTimeModel;
+
+class TaskListMenu;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -68,7 +68,7 @@ private:
     DataBase *db;
     TaskModel *modelTask;
     TaskTimeModel *modelTime;
-    QMenu *customTaskMenu;
+    TaskListMenu *taskListMenu;
 
     void createUI();
 

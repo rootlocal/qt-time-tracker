@@ -3,7 +3,8 @@
 
 #include <QDialog>
 #include "view/clockview.h"
-#include "Settings.h"
+
+class Settings;
 
 namespace Ui {
     class SettingsWindow;
@@ -17,10 +18,6 @@ public:
 
     ~SettingsWindow() override;
 
-    void loadSettings();
-
-    void saveSettings();
-
 signals:
 
     void signalSizeChanged(QSize);
@@ -32,6 +29,7 @@ signals:
     void settingsWindowReject();
 
 public slots:
+
     void show();
 
     void accept() override;

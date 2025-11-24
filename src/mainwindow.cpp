@@ -3,6 +3,8 @@
 #include <QMenu>
 #include <QAction>
 #include <QTimer>
+#include <QTime>
+#include <QDebug>
 #include "view/clockview.h"
 #include "ActionMenu.h"
 #include "SettingsWindow.h"
@@ -17,6 +19,7 @@
 QT_USE_NAMESPACE
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
+    //qDebug() << Q_FUNC_INFO  << (QTime::currentTime()).toString("HH:mm:ss");
     db = new DataBase(this);
     db->connectToDataBase();
     timer = new QTimer(this);

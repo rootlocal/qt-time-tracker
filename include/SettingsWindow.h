@@ -51,7 +51,6 @@ private slots:
     void btnResetColorClicked();
 
     void isCustomSizeClicked(bool state);
-<<<<<<< HEAD
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -59,8 +58,6 @@ protected:
     void moveEvent(QMoveEvent *event) override;
 
     void resizeEvent(QResizeEvent *event) override;
-=======
->>>>>>> c034459 (upd)
 
 private:
     void colorChange(ClockView::clockStateEnum state, const QColor &color);

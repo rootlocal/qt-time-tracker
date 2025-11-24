@@ -4,7 +4,7 @@ Build:
 
 ~~~shell
 
-git clone https://rootlocal@bitbucket.org/rootlocal/redmine-time-tracker.git
+git clone <REPO>
 cd redmine-time-tracker
 mkdir build && cd build
 cmake ../

@@ -1,18 +1,20 @@
+#include <QDebug>
+#include <QDateTime>
 #include "model/TaskTimeModel.h"
 #include "DataBase.h"
-#include <QDebug>
+#include "helpers/TimeDateHelper.h"
 
 TaskTimeModel::TaskTimeModel(QObject *parent) : QSqlRelationalTableModel(parent) {
     this->setTable(TABLE_TASK_TIME);
     this->setRelation(1, QSqlRelation(TABLE_TASK, "id", "name"));
 
     QStringList headersColumnsList;
-    headersColumnsList.append(tr("id"));                    // 0
-    headersColumnsList.append(tr("Task"));                  // 1
-    headersColumnsList.append(tr("Time"));                  // 2
-    headersColumnsList.append(tr("Created"));               // 3
-    headersColumnsList.append(tr("Updated"));               // 4
-    headersColumnsList.append(tr("Description"));           // 5
+    headersColumnsList.insert(attributesEnum::ID, tr("id"));
+    headersColumnsList.insert(attributesEnum::TASK, tr("Task"));
+    headersColumnsList.insert(attributesEnum::TIME, tr("Time"));
+    headersColumnsList.insert(attributesEnum::CREATED, tr("Created"));
+    headersColumnsList.insert(attributesEnum::UPDATED, tr("Updated"));
+    headersColumnsList.insert(attributesEnum::DESCRIPTION, tr("Description"));
 
     for (int i = 0, j = 0; i < this->columnCount(); i++, j++) {
         this->setHeaderData(i, Qt::Horizontal, headersColumnsList[j]);
@@ -20,4 +22,36 @@ TaskTimeModel::TaskTimeModel(QObject *parent) : QSqlRelationalTableModel(parent)
 
     this->setSort(4, Qt::DescendingOrder);
     this->setEditStrategy(QSqlTableModel::OnManualSubmit);
+}
+
+QVariant TaskTimeModel::data(const QModelIndex &item, int role) const {
+    QVariant value = QSqlRelationalTableModel::data(item, role);
+
+    if (role == Qt::DisplayRole) {
+        if (item.column() == attributesEnum::CREATED || item.column() == attributesEnum::UPDATED) {
+
+            if (value.canConvert<QDateTime>()) {
+                QDateTime dateTime = value.toDateTime();
+                return dateTime.toString("dd.MM.yyyy HH:mm:ss");
+            }
+
+        } else if (item.column() == attributesEnum::TIME) {
+            return TimeDateHelper::formatTimeToString(value);
+        }
+    }
+
+
+    return QSqlRelationalTableModel::data(item, role);
+}
+
+bool TaskTimeModel::setData(const QModelIndex &item, const QVariant &value, int role) {
+    if (item.column() == attributesEnum::CREATED && value.toString().isEmpty()) {
+        QVariant val(DataBase::getCurrentDateTime());
+        return QSqlRelationalTableModel::setData(item, val, role);
+    } else if (item.column() == attributesEnum::UPDATED) {
+        QVariant val(DataBase::getCurrentDateTime());
+        return QSqlRelationalTableModel::setData(item, val, role);
+    }
+
+    return QSqlRelationalTableModel::setData(item, value, role);
 }

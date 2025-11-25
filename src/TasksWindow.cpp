@@ -72,7 +72,7 @@ void TasksWindow::createUI() {
     modelTask->select();
     modelTime->select();
     ui->tableViewtasks->setModel(modelTask);
-    ui->tableViewtasks->setColumnHidden(0, true); // id
+    ui->tableViewtasks->setColumnHidden(TaskModel::attributesEnum::ID, true);
     ui->tableViewtasks->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableViewtasks->setSelectionMode(QAbstractItemView::SingleSelection);
     //ui->tableViewtasks->resizeColumnsToContents();
@@ -98,8 +98,8 @@ void TasksWindow::createUI() {
             &TasksWindow::customTaskHeaderMenuRequested);
 
     ui->tableViewtaskTime->setModel(modelTime);
-    ui->tableViewtaskTime->setColumnHidden(0, true);
-    ui->tableViewtaskTime->setColumnHidden(4, true);
+    ui->tableViewtaskTime->setColumnHidden(TaskTimeModel::attributesEnum::ID, true);
+    ui->tableViewtaskTime->setColumnHidden(TaskTimeModel::attributesEnum::UPDATED, true);
     ui->tableViewtaskTime->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableViewtaskTime->setSelectionMode(QAbstractItemView::SingleSelection);
     //ui->tableViewtaskTime->resizeColumnsToContents();
@@ -130,11 +130,10 @@ void TasksWindow::slotActionEditTask() {
  */
 void TasksWindow::slotEditTask(const QModelIndex index) {
     auto *addTaskWindow = new TaskAddWindow(modelTask, index.row(), this);
-    QMetaObject::Connection con = connect(addTaskWindow, &TaskAddWindow::signalReady, this,
-                                          &TasksWindow::slotUpdateModels);
+    connect(addTaskWindow, &TaskAddWindow::signalReady, this, &TasksWindow::slotUpdateModels);
     addTaskWindow->setWindowTitle(tr("Edit Task"));
     addTaskWindow->exec();
-    disconnect(con);
+    disconnect(addTaskWindow, &TaskAddWindow::signalReady, this, &TasksWindow::slotUpdateModels);
     delete addTaskWindow;
 }
 
@@ -172,7 +171,7 @@ void TasksWindow::slotAddTask() {
     auto *addTaskWindow = new TaskAddWindow(modelTask, -1, this);
     QMetaObject::Connection con = connect(addTaskWindow, &TaskAddWindow::signalReady, this,
                                           &TasksWindow::slotUpdateModels);
-    addTaskWindow->setWindowTitle(tr("Add Task"));
+    addTaskWindow->setWindowTitle(tr("&Add Task"));
     addTaskWindow->exec();
     disconnect(con);
     delete addTaskWindow;

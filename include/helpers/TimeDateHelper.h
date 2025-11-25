@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+class QVariant;
+
 class TimeDateHelper : public QObject {
 Q_OBJECT
 
@@ -14,6 +16,8 @@ public:
     };
 
     static QString formatTimeToString(const quint64 &timeSec);
+
+    static QString formatTimeToString(const QVariant &timeSec);
 
 };
 

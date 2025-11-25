@@ -18,9 +18,9 @@ TaskListWindow::TaskListWindow(Settings *mSettings, QWidget *parent) : QDialog(p
 
     if (!settings->getWindowGeometry("taskList").isEmpty()) {
         restoreGeometry(settings->getWindowGeometry("taskList"));
-    } else {
-        this->resize(348, 207);
     }
+
+    this->resize(420, 100);
 
     ui->comboBoxTasks->clear();
     QStringList statusesIds;
@@ -67,6 +67,7 @@ void TaskListWindow::accept() {
 }
 
 void TaskListWindow::reject() {
+    settings->setWindowGeometry("taskList", saveGeometry());
     this->hide();
 }
 

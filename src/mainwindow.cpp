@@ -8,7 +8,6 @@
 #include "view/clockview.h"
 #include "menu/ClockViewMenu.h"
 #include "SettingsWindow.h"
-#include "Settings.h"
 #include "TasksWindow.h"
 #include "TaskListWindow.h"
 #include "DataBase.h"
@@ -18,19 +17,15 @@
 
 QT_USE_NAMESPACE
 
-MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
+MainWindow::MainWindow(DataBase *db, QWidget *parent) : QWidget(parent) {
     //qDebug() << Q_FUNC_INFO  << (QTime::currentTime()).toString("HH:mm:ss");
-    db = new DataBase(this);
-    db->connectToDataBase();
+    this->db = db;
     timer = new QTimer(this);
     timer->setInterval(1000);
     settings = new Settings(this);
-
     clockViewMenu = new ClockViewMenu(this);
     clock = new ClockView(this, clockViewMenu, settings);
-
     systemTrayIcon = new QSystemTrayIcon(QIcon(TRAY_ICON), this);
-
     settingsWindow = new SettingsWindow(this, settings);
     tasksWindow = new TasksWindow(settings, this);
 
@@ -77,6 +72,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 }
 
 MainWindow::~MainWindow() {
+    qDebug() << "Shutdown";
     db->closeDataBase();
     delete systemTrayIcon;
     delete clockViewMenu;

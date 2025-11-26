@@ -51,6 +51,7 @@
 extern "C" {
 #endif
 
+#define APP_NAME            "@PROJECT_NAME@"
 #define APP_VERSION_MAJOR   @PACKAGE_MAJOR@
 #define APP_VERSION_MINOR   @PACKAGE_MINOR@
 #define APP_VERSION_PATCH   @PACKAGE_PATCH@

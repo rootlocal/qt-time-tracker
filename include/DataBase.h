@@ -25,7 +25,7 @@ public:
 
     ~DataBase() override;
 
-    void connectToDataBase();
+    bool connectToDataBase();
 
     static bool isStatusExits(const taskStatusEnum &type);
 
@@ -45,6 +45,7 @@ public:
 
     static QString getCurrentDateTime();
 
+
 private:
     QSqlDatabase db;
     QString databaseName;
@@ -52,7 +53,7 @@ private:
 private:
     bool openDataBase();
 
-    bool restoreDataBase();
+    bool createDataBase();
 
     bool createTables();
 

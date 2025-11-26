@@ -32,7 +32,7 @@ public:
         STOPPED,
     };
 
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(DataBase *db, QWidget *parent = nullptr);
 
     ~MainWindow() override;
 

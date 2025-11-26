@@ -1,4 +1,3 @@
-#include <QStandardPaths>
 #include <QDir>
 #include <QDateTime>
 #include <QSql>
@@ -6,37 +5,37 @@
 #include <QSqlError>
 #include <QDebug>
 #include "DataBase.h"
+#include "helpers/FileHelper.h"
 
 QT_USE_NAMESPACE
 
 DataBase::DataBase(QObject *parent) : QObject(parent) {
-    QString appConfigPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
-    databaseName = appConfigPath + QDir::separator() + "tasks.db";
-
-    if (!QDir(appConfigPath).exists()) {
-        QDir().mkdir(appConfigPath);
-    }
+    databaseName = FileHelper::getTaskDbFile();
 }
 
 DataBase::~DataBase() = default;
 
-void DataBase::connectToDataBase() {
-    /*if (!QFile(databaseName).exists()) {
-        this->restoreDataBase();
+bool DataBase::connectToDataBase() {
+
+    if (!QFile(databaseName).exists()) {
+        qDebug() << "Database does not exist, creating ...";
+
+        if (this->createDataBase()) {
+            return this->openDataBase();
+        }
+
     } else {
-        this->openDataBase();
-    }*/
-
-    this->restoreDataBase();
-}
-
-bool DataBase::restoreDataBase() {
-    if (!openDataBase()) {
-        qDebug() << "Failed to open database: " << databaseName;
+        return this->openDataBase();
     }
 
+    return false;
+}
+
+bool DataBase::createDataBase() {
+    qDebug() << "Create database";
+
     if (!this->createTables()) {
-        qDebug() << "Failed to restore database: " << databaseName;
+        qCritical() << "Failed to create tables " << databaseName << ": " << db.lastError().text();
         return false;
     }
 
@@ -60,6 +59,7 @@ bool DataBase::restoreDataBase() {
 }
 
 bool DataBase::openDataBase() {
+    qDebug() << "Open Database: " << databaseName;
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(databaseName);
 
@@ -68,6 +68,8 @@ bool DataBase::openDataBase() {
         query.exec("PRAGMA foreign_keys = ON;");
         return true;
     }
+
+    qCritical() << QObject::tr("Database Error: ") << db.lastError().text();
 
     return false;
 }
@@ -101,6 +103,8 @@ bool DataBase::executeSqlList(const QList<QString> &sqlCommands) {
 }
 
 bool DataBase::createTables() {
+    qInfo() << "Create tables";
+
     QList<QString> sql;
 
     if (!db.tables().contains(TABLE_TASK_STATUS)) {
@@ -264,8 +268,7 @@ bool DataBase::insertIntoTimeTable(const QVariantList &data) {
 }
 
 QString DataBase::getCurrentDateTime() {
-    return QDateTime::currentDateTime()
-            .toOffsetFromUtc(QDateTime::currentDateTime()
-                                     .offsetFromUtc()).toString(Qt::ISODate);
+    QDateTime dateTime = QDateTime::currentDateTime().toOffsetFromUtc(QDateTime::currentDateTime().offsetFromUtc());
+    return dateTime.toString(Qt::ISODate);
 }
 
